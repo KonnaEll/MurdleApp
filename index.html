@@ -50,7 +50,6 @@
       overflow-x: hidden;
     }
 
-    /* Header Bar */
     header {
       display: flex;
       justify-content: space-between;
@@ -95,7 +94,6 @@
       gap: 3px;
     }
 
-    /* Case Dossier Box */
     .dossier {
       background: var(--card);
       border-radius: 12px;
@@ -128,7 +126,6 @@
       color: var(--ink-dim);
     }
 
-    /* Clues List */
     .block-header {
       font-size: 0.72rem;
       text-transform: uppercase;
@@ -168,7 +165,6 @@
       font-weight: bold;
     }
 
-    /* L-SHAPED DEDUCTION GRID */
     .grid-scroller {
       background: var(--card);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -201,7 +197,6 @@
       padding-bottom: 6px;
     }
 
-    /* Vertical Category Labels on Left */
     .vertical-title-cell {
       width: 24px;
       max-width: 24px;
@@ -239,20 +234,6 @@
       line-height: 1;
     }
 
-    .icon-letter-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      border-radius: 6px;
-      background: var(--card-alt);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      font-weight: 900;
-      font-size: 1rem;
-      color: #fff;
-    }
-
     .row-icon-header {
       width: 44px;
       max-width: 44px;
@@ -271,7 +252,6 @@
       vertical-align: middle;
     }
 
-    /* Subgrid thick division lines */
     .border-right-thick {
       border-right: 3px solid var(--grid-heavy) !important;
     }
@@ -328,7 +308,6 @@
       margin-top: 2px;
     }
 
-    /* Legend */
     .grid-legend {
       display: flex;
       justify-content: center;
@@ -338,7 +317,6 @@
       margin-top: 8px;
     }
 
-    /* Accusation Form */
     .accusation-card {
       background: var(--card);
       border-radius: 12px;
@@ -395,7 +373,6 @@
       transform: scale(0.98);
     }
 
-    /* Drawers / Modals */
     .drawer-overlay {
       position: fixed;
       inset: 0;
@@ -470,7 +447,6 @@
       line-height: 1.45;
     }
 
-    /* Walkthrough Solve Box */
     .walkthrough-step {
       background: var(--card-alt);
       border-radius: 8px;
@@ -504,7 +480,6 @@
       line-height: 1.4;
     }
 
-    /* Result Toast */
     .toast-box {
       position: fixed;
       top: 50%;
@@ -560,8 +535,8 @@
   <!-- Dossier -->
   <div class="dossier">
     <div class="dossier-tag" id="case-badge">Case 1 · Difficulty: Novice</div>
-    <h2 class="dossier-heading" id="case-title">The Observatory Blackout</h2>
-    <p class="dossier-narrative" id="case-story">A body has been found at the mountain station. Cross-examine the evidence and fill out your deduction grid.</p>
+    <h2 class="dossier-heading" id="case-title">Loading...</h2>
+    <p class="dossier-narrative" id="case-story">Loading mystery dossier...</p>
   </div>
 
   <!-- Clues -->
@@ -572,9 +547,7 @@
 
   <!-- L-Shaped Murdle Logic Grid -->
   <div class="grid-scroller">
-    <table class="murdle-table" id="murdle-grid">
-      <!-- Generated Dynamically -->
-    </table>
+    <table class="murdle-table" id="murdle-grid"></table>
     <div class="grid-legend">
       <span><strong>[Blank]</strong> Unknown</span>
       <span style="color:#f87171;"><strong>[✕]</strong> Ruled Out</span>
@@ -608,7 +581,7 @@
   <div class="drawer-overlay" id="archive-modal">
     <div class="drawer-body">
       <div class="drawer-title-row">
-        <div class="drawer-title">Official Case Log</div>
+        <div class="drawer-title">Official Case Log (30 Cases)</div>
         <button class="close-drawer" id="close-archive">&times;</button>
       </div>
       <div id="case-list-container"></div>
@@ -647,20 +620,22 @@
 
   <script>
     /* =========================================================================
-       10 CURATED CASES
-       - Icon-only grids (using emojis/letter badges with NO words inside the grid)
-       - Clear step-by-step logic proof and subtle hints
+       30 VERIFIED, AIRTIGHT LOGIC MYSTERIES
+       Every case contains:
+       - 3 Suspects, 3 Weapons, 3 Locations
+       - Fully closed, unambiguous deductions with mathematically sound steps
+       - Strict icon representations
        ========================================================================= */
     const CASES = [
       {
         id: 1,
-        title: "The Mountain Observatory",
-        difficulty: "Novice",
-        story: "A quiet telescope night turned fatal when the astronomer collapsed during a sudden outage. Eliminate innocent suspects and reconstruct the crime scene.",
+        title: "The Observatory Blackout",
+        difficulty: "Elementary",
+        story: "The mountain astronomer slumped over their chart table during a planned satellite tracking sequence. One researcher carried out an assassination.",
         suspects: [
-          { name: "Dr. Violet", icon: "🟣", letter: "V" },
-          { name: "Dean Cobalt", icon: "🔵", letter: "C" },
-          { name: "Judge Amber", icon: "🟠", letter: "A" }
+          { name: "Dr. Violet", icon: "🟣" },
+          { name: "Dean Cobalt", icon: "🔵" },
+          { name: "Judge Amber", icon: "🟠" }
         ],
         weapons: [
           { name: "Neurotoxin", icon: "🧠" },
@@ -673,31 +648,30 @@
           { name: "Radio Dish", icon: "📡" }
         ],
         clues: [
-          "Dr. Violet (🟣) was logged examining instruments at the Radio Dish (📡) all evening.",
-          "The victim had no strangulation or impact trauma; they ingested lethal Neurotoxin (🧠).",
-          "Dean Cobalt (🔵) never stepped foot into Archive A (🅰️).",
-          "The person at the Lab Center (🏢) had the Coiled Wire (➰)."
+          "Dr. Violet (🟣) was logged at the Radio Dish (📡) wearing the Heavy Goggles (🥽).",
+          "Dean Cobalt (🔵) was verified working inside the Lab Center (🏢).",
+          "The Coiled Wire (➰) was found inside the Lab Center (🏢).",
+          "The victim had no strangulation or impact trauma; they ingested lethal Neurotoxin (🧠) inside Archive A (🅰️)."
         ],
-        hint: "Dr. Violet's dish alibi and Dean Cobalt's absence from Archive A leave only one person who could have been at Archive A.",
+        hint: "Two researchers have verified alibis at the Dish and Lab Center. Who was stationed at Archive A?",
         solveSteps: [
-          "Place a ✓ at Dr. Violet (🟣) and Radio Dish (📡). Put ✕ everywhere else in that row and column.",
-          "Dean Cobalt (🔵) was not at Archive A (🅰️), and Dr. Violet was at the Radio Dish, which means Judge Amber (🟠) must have been at Archive A (🅰️).",
-          "By elimination of locations, Dean Cobalt (🔵) was at the Lab Center (🏢).",
-          "The clue says whoever was at the Lab Center (🏢) had the Coiled Wire (➰). Therefore Dean Cobalt held the Coiled Wire.",
-          "The victim ingested Neurotoxin (🧠), which is the fatal murder weapon.",
-          "Dr. Violet was at the Dish, Dean was at the Lab Center with the Wire. That leaves Judge Amber at Archive A with the Neurotoxin as the Killer."
+          "Dr. Violet (🟣) is at Radio Dish (📡) with Heavy Goggles (🥽). Place ✓ for both.",
+          "Dean Cobalt (🔵) is at Lab Center (🏢) where the Coiled Wire (➰) was located.",
+          "By elimination, Judge Amber (🟠) was at Archive A (🅰️).",
+          "By elimination of items, Judge Amber possessed the Neurotoxin (🧠).",
+          "The victim ingested Neurotoxin in Archive A, proving Judge Amber is the Killer."
         ],
         solution: { suspect: "Judge Amber", weapon: "Neurotoxin", location: "Archive A" }
       },
       {
         id: 2,
         title: "The Old Clocktower Mystery",
-        difficulty: "Novice",
-        story: "The gears jammed as bells chimed twelve. A body was wedged inside the mechanism of the historic tower.",
+        difficulty: "Elementary",
+        story: "The bells stalled mid-chime. A craftsman was discovered trapped between the bronze escapement gears.",
         suspects: [
-          { name: "Silversmith", icon: "🪙", letter: "S" },
-          { name: "Watchmaker", icon: "🕰️", letter: "W" },
-          { name: "Apprentice", icon: "🔧", letter: "A" }
+          { name: "Silversmith", icon: "🪙" },
+          { name: "Watchmaker", icon: "🕰️" },
+          { name: "Apprentice", icon: "🔧" }
         ],
         weapons: [
           { name: "Heavy Gear", icon: "⚙️" },
@@ -710,31 +684,29 @@
           { name: "Workshop", icon: "🏭" }
         ],
         clues: [
-          "The Silversmith (🪙) was observed working alone down in the Workshop (🏭).",
-          "The Pendulum Cord (🪢) was confiscated inside the Dial Room (⏲️).",
-          "Forensic burns proved the fatal weapon was the Acid Vial (🧪).",
-          "The Apprentice (🔧) was clearing pigeons out of the high Bell Loft (🔔)."
+          "The Apprentice (🔧) was in the Bell Loft (🔔) repairing brackets with the Heavy Gear (⚙️).",
+          "The Watchmaker (🕰️) was working at the dials in the Dial Room (⏲️).",
+          "The Pendulum Cord (🪢) was left coiled in the Dial Room (⏲️).",
+          "The victim suffered fatal chemical burns from the Acid Vial (🧪) down in the Workshop (🏭)."
         ],
-        hint: "Map the locations of the Silversmith and Apprentice first. Look at the only room left for the Watchmaker.",
+        hint: "The Apprentice was in the loft and the Watchmaker was in the dial room. Who worked downstairs in the workshop?",
         solveSteps: [
-          "Silversmith (🪙) = Workshop (🏭). Mark ✓ and cross out other possibilities.",
-          "Apprentice (🔧) = Bell Loft (🔔). Mark ✓.",
-          "By elimination, Watchmaker (🕰️) must have been in the Dial Room (⏲️).",
-          "The clues establish that the Pendulum Cord (🪢) was in the Dial Room (⏲️), meaning the Watchmaker held the Cord.",
-          "The clue confirms the lethal weapon was the Acid Vial (🧪).",
-          "The Apprentice was at the Bell Loft, the Watchmaker held the Cord in the Dial Room. The Silversmith in the Workshop was the only one with the Acid Vial."
+          "Apprentice (🔧) = Bell Loft (🔔) with Heavy Gear (⚙️).",
+          "Watchmaker (🕰️) = Dial Room (⏲️) with Pendulum Cord (🪢).",
+          "By elimination, Silversmith (🪙) was in the Workshop (🏭) with the Acid Vial (🧪).",
+          "The victim died from the Acid Vial in the Workshop, confirming the Silversmith is the Killer."
         ],
         solution: { suspect: "Silversmith", weapon: "Acid Vial", location: "Workshop" }
       },
       {
         id: 3,
         title: "The Botanical Glasshouse",
-        difficulty: "Easy",
-        story: "Under misty glass, a rare hybrid bloom was ruined—and the head groundskeeper eliminated.",
+        difficulty: "Elementary",
+        story: "Among carnivorous orchids, the head gardener was clipped down before the morning watering tour.",
         suspects: [
-          { name: "Florist", icon: "🌹", letter: "F" },
-          { name: "Herbalist", icon: "🌿", letter: "H" },
-          { name: "Baron", icon: "🎩", letter: "B" }
+          { name: "Florist", icon: "🌹" },
+          { name: "Herbalist", icon: "🌿" },
+          { name: "Baron", icon: "🎩" }
         ],
         weapons: [
           { name: "Pruning Shears", icon: "✂️" },
@@ -747,30 +719,29 @@
           { name: "Rose Gazebo", icon: "🏛️" }
         ],
         clues: [
-          "The Baron (🎩) was taking afternoon coffee inside the Rose Gazebo (🏛️).",
-          "The Garden Spade (🪴) was discovered resting in the Greenhouse (🌺).",
-          "The Herbalist (🌿) was stoking coal inside the Boiler Room (🔥).",
-          "The victim was found with deep sharp punctures from Pruning Shears (✂️)."
+          "The Baron (🎩) was drinking tea in the Rose Gazebo (🏛️) carrying Wolfsbane (☠️).",
+          "The Florist (🌹) was cataloging stems in the Greenhouse (🌺).",
+          "The Garden Spade (🪴) was resting in the soil inside the Greenhouse (🌺).",
+          "The victim was slain with sharp Pruning Shears (✂️) in the Boiler Room (🔥)."
         ],
-        hint: "Determine where the Florist was by eliminating the Gazebo and Boiler Room, then check what was left there.",
+        hint: "Check the Baron and Florist's locations. The remaining person in the Boiler Room held the sharp tool.",
         solveSteps: [
-          "Baron (🎩) = Gazebo (🏛️). Herbalist (🌿) = Boiler Room (🔥).",
-          "This leaves the Florist (🌹) in the Greenhouse (🌺).",
-          "The Garden Spade (🪴) was found in the Greenhouse, which means the Florist was with the Spade.",
-          "The clue confirms Pruning Shears (✂️) was the murder weapon.",
-          "Since the Florist had the Spade and the Baron was in the Gazebo, the Herbalist in the Boiler Room possessed the Pruning Shears and committed the crime."
+          "Baron (🎩) = Rose Gazebo (🏛️) with Wolfsbane (☠️).",
+          "Florist (🌹) = Greenhouse (🌺) with Garden Spade (🪴).",
+          "By elimination, Herbalist (🌿) was in the Boiler Room (🔥) with the Pruning Shears (✂️).",
+          "The victim was slain with Pruning Shears in the Boiler Room, proving the Herbalist is the Killer."
         ],
         solution: { suspect: "Herbalist", weapon: "Pruning Shears", location: "Boiler Room" }
       },
       {
         id: 4,
         title: "Murder on the Alpine Express",
-        difficulty: "Easy",
-        story: "Snow blocked the tracks and dining lights cut out. A diplomat was assassinated in the dark.",
+        difficulty: "Elementary",
+        story: "As the train entered the avalanche gallery, a diplomat fell silent in their compartment.",
         suspects: [
-          { name: "Countess", icon: "💎", letter: "C" },
-          { name: "Officer", icon: "🎖️", letter: "O" },
-          { name: "Spy", icon: "🕶️", letter: "S" }
+          { name: "Countess", icon: "💎" },
+          { name: "Officer", icon: "🎖️" },
+          { name: "Spy", icon: "🕶️" }
         ],
         weapons: [
           { name: "Silver Dagger", icon: "🗡️" },
@@ -783,30 +754,29 @@
           { name: "Baggage Car", icon: "🧳" }
         ],
         clues: [
-          "The Countess (💎) stayed seated in the crowded Dining Car (🍽️) surrounded by witnesses.",
-          "A deafening gunshot echoed—confirming the Pocket Pistol (🔫) was used.",
-          "The Silver Dagger (🗡️) was tucked away in the Baggage Car (🧳).",
-          "The Officer (🎖️) was verified sleeping soundly in the Sleeper Cabin (🛏️)."
+          "The Officer (🎖️) was sleeping in the Sleeper Cabin (🛏️) holding the Lethal Brandy (🍷).",
+          "The Spy (🕶️) was hiding among crates in the Baggage Car (🧳).",
+          "The Silver Dagger (🗡️) was discovered in the Baggage Car (🧳).",
+          "A gunshot from the Pocket Pistol (🔫) was fired inside the Dining Car (🍽️)."
         ],
-        hint: "Identify who occupied the Baggage Car. Cross-reference that with the weapon found there.",
+        hint: "Look at the Dining Car. With the other two passengers accounted for, who held the pistol?",
         solveSteps: [
-          "Countess (💎) = Dining Car (🍽️). Officer (🎖️) = Sleeper Cabin (🛏️).",
-          "This leaves the Spy (🕶️) in the Baggage Car (🧳).",
-          "The Silver Dagger (🗡️) was in the Baggage Car (🧳), so the Spy carried the Dagger.",
-          "The lethal weapon was the Pocket Pistol (🔫).",
-          "The Countess was seated in the Dining Car, which must be where the Pocket Pistol was fired."
+          "Officer (🎖️) = Sleeper Cabin (🛏️) with Lethal Brandy (🍷).",
+          "Spy (🕶️) = Baggage Car (🧳) with Silver Dagger (🗡️).",
+          "By elimination, Countess (💎) was in the Dining Car (🍽️) with the Pocket Pistol (🔫).",
+          "The Pocket Pistol was fired in the Dining Car, identifying the Countess as the Killer."
         ],
         solution: { suspect: "Countess", weapon: "Pocket Pistol", location: "Dining Car" }
       },
       {
         id: 5,
         title: "The Grand Library Archives",
-        difficulty: "Medium",
-        story: "A rare occult folio was torn, and the chief archivist silenced beneath towering stacks.",
+        difficulty: "Elementary",
+        story: "Between ancient codices, an archivist was silenced before an illuminated manuscript could be revealed.",
         suspects: [
-          { name: "Librarian", icon: "📚", letter: "L" },
-          { name: "Professor", icon: "🎓", letter: "P" },
-          { name: "Collector", icon: "💼", letter: "C" }
+          { name: "Librarian", icon: "📚" },
+          { name: "Professor", icon: "🎓" },
+          { name: "Collector", icon: "💼" }
         ],
         weapons: [
           { name: "Brass Bookend", icon: "🧱" },
@@ -819,30 +789,29 @@
           { name: "Belfry Tower", icon: "🏰" }
         ],
         clues: [
-          "The Professor (🎓) spent midnight researching in the Reading Room (📖).",
-          "The Brass Bookend (🧱) caused fatal blunt-force trauma; poison was ruled out.",
-          "The Collector (💼) had an appointment inside the Belfry Tower (🏰).",
-          "The Letter Opener (✒️) was left forgotten in the Rare Vault (🗝️)."
+          "The Collector (💼) was meeting guests in the Belfry Tower (🏰) holding Arsenic Ink (🫙).",
+          "The Librarian (📚) was organizing manuscripts in the Rare Vault (🗝️).",
+          "The Letter Opener (✒️) was locked in the Rare Vault (🗝️).",
+          "Blunt force trauma from the Brass Bookend (🧱) was inflicted inside the Reading Room (📖)."
         ],
-        hint: "The fatal weapon is the bookend. See which room did NOT have the letter opener or the tower guests.",
+        hint: "The Vault and Tower are accounted for. Who was alone in the Reading Room with heavy brass?",
         solveSteps: [
-          "Professor (🎓) = Reading Room (📖). Collector (💼) = Belfry Tower (🏰).",
-          "The Librarian (📚) must have been in the Rare Vault (🗝️).",
-          "The Letter Opener (✒️) was in the Rare Vault (🗝️), proving the Librarian held the Opener.",
-          "The lethal weapon is the Brass Bookend (🧱).",
-          "Since the Librarian was in the Vault with the Opener, the Bookend had to be with the Professor in the Reading Room."
+          "Collector (💼) = Belfry Tower (🏰) with Arsenic Ink (🫙).",
+          "Librarian (📚) = Rare Vault (🗝️) with Letter Opener (✒️).",
+          "By elimination, Professor (🎓) was in the Reading Room (📖) with the Brass Bookend (🧱).",
+          "The Brass Bookend struck the fatal blow in the Reading Room, naming the Professor as the Killer."
         ],
         solution: { suspect: "Professor", weapon: "Brass Bookend", location: "Reading Room" }
       },
       {
         id: 6,
         title: "The Harbor Fog Syndicate",
-        difficulty: "Medium",
-        story: "As tides rolled in, an illicit cargo boss met an untimely end by the murky docks.",
+        difficulty: "Easy",
+        story: "At low tide, a cargo inspector was found beneath the wooden piers covered in ocean brine.",
         suspects: [
-          { name: "Captain", icon: "⚓", letter: "C" },
-          { name: "Smuggler", icon: "📦", letter: "S" },
-          { name: "Diver", icon: "🤿", letter: "D" }
+          { name: "Captain", icon: "⚓" },
+          { name: "Smuggler", icon: "📦" },
+          { name: "Diver", icon: "🤿" }
         ],
         weapons: [
           { name: "Harpoon", icon: "🔱" },
@@ -855,30 +824,29 @@
           { name: "Boathouse", icon: "🛶" }
         ],
         clues: [
-          "The Captain (⚓) was haggling with fishermen inside the Fish Market (🐟).",
-          "The Anchor Chain (⛓️) was tangled under the floats at Pier 4 (🚢).",
-          "The Diver (🤿) was verified testing air tanks in the Boathouse (🛶).",
-          "The victim had rope and link bruising; neither harpoon nor burns were found."
+          "The Captain (⚓) was inspecting catches in the Fish Market (🐟) with the Flare Gun (💥).",
+          "The Diver (🤿) was testing equipment in the Boathouse (🛶) carrying the Harpoon (🔱).",
+          "The Smuggler (📦) was spotted pacing by the water at Pier 4 (🚢).",
+          "The victim was strangled with the heavy Anchor Chain (⛓️) on Pier 4 (🚢)."
         ],
-        hint: "Match the chain to its location, then see who had no market or boathouse alibi.",
+        hint: "The Captain and Diver have confirmed gear and spots. Who had the heavy iron links at Pier 4?",
         solveSteps: [
-          "Captain (⚓) = Fish Market (🐟). Diver (🤿) = Boathouse (🛶).",
-          "This places the Smuggler (📦) at Pier 4 (🚢).",
-          "The Anchor Chain (⛓️) was at Pier 4 (🚢), so the Smuggler had the Anchor Chain.",
-          "The bruising confirms the Anchor Chain was the murder weapon.",
-          "Smuggler + Anchor Chain + Pier 4 is the complete verdict."
+          "Captain (⚓) = Fish Market (🐟) with Flare Gun (💥).",
+          "Diver (🤿) = Boathouse (🛶) with Harpoon (🔱).",
+          "By elimination, Smuggler (📦) was at Pier 4 (🚢) with the Anchor Chain (⛓️).",
+          "The victim was murdered with the Anchor Chain at Pier 4, making the Smuggler the Killer."
         ],
         solution: { suspect: "Smuggler", weapon: "Anchor Chain", location: "Pier 4" }
       },
       {
         id: 7,
         title: "The Pharaoh's Dig",
-        difficulty: "Challenging",
-        story: "Hieroglyphs concealed a chamber where an archaeologist was poisoned before opening the tomb.",
+        difficulty: "Easy",
+        story: "Inside the freshly unsealed subterranean tomb, the expedition chief took their final breath.",
         suspects: [
-          { name: "Surveyor", icon: "📐", letter: "S" },
-          { name: "Doctor", icon: "🩺", letter: "D" },
-          { name: "Sponsor", icon: "💰", letter: "P" }
+          { name: "Surveyor", icon: "📐" },
+          { name: "Doctor", icon: "🩺" },
+          { name: "Sponsor", icon: "💰" }
         ],
         weapons: [
           { name: "Bronze Pick", icon: "⛏️" },
@@ -891,30 +859,29 @@
           { name: "Excavation Pit", icon: "🏜️" }
         ],
         clues: [
-          "The Doctor (🩺) was treating heat exhaustion at the Camp Tent (⛺).",
-          "The Bronze Pick (⛏️) was found abandoned in the Excavation Pit (🏜️).",
-          "The Surveyor (📐) was mapping coordinate grids out in the Excavation Pit (🏜️).",
-          "Toxicological analysis revealed lethal Scorpion Venom (🦂) in the victim's water skin."
+          "The Doctor (🩺) was bandaging wounds in the Camp Tent (⛺) holding the Linen Shroud (🧣).",
+          "The Surveyor (📐) was logging elevations in the Excavation Pit (🏜️).",
+          "The Bronze Pick (⛏️) was left standing in the Excavation Pit (🏜️).",
+          "Lethal Scorpion Venom (🦂) claimed the victim inside the Burial Crypt (⚰️)."
         ],
-        hint: "Connect the survivor at the tent and the surveyor at the pit to locate where the fatal venom was drawn.",
+        hint: "The tent and pit each have clear occupants. Who entered the burial crypt with poison?",
         solveSteps: [
-          "Doctor (🩺) = Camp Tent (⛺). Surveyor (📐) = Excavation Pit (🏜️).",
-          "This places the Sponsor (💰) in the Burial Crypt (⚰️).",
-          "Surveyor was in the Excavation Pit where the Bronze Pick was abandoned, matching Surveyor to Pick.",
-          "Lethal weapon was Scorpion Venom (🦂).",
-          "The Sponsor in the Burial Crypt held the Scorpion Venom and struck down the archaeologist."
+          "Doctor (🩺) = Camp Tent (⛺) with Linen Shroud (🧣).",
+          "Surveyor (📐) = Excavation Pit (🏜️) with Bronze Pick (⛏️).",
+          "By elimination, Sponsor (💰) was in the Burial Crypt (⚰️) with Scorpion Venom (🦂).",
+          "The murder occurred via Scorpion Venom in the Burial Crypt, convicting the Sponsor as the Killer."
         ],
         solution: { suspect: "Sponsor", weapon: "Scorpion Venom", location: "Burial Crypt" }
       },
       {
         id: 8,
         title: "The Grand Opera House",
-        difficulty: "Challenging",
-        story: "During the final aria, the lead tenor dropped before the standing ovation could begin.",
+        difficulty: "Easy",
+        story: "The opening aria ended with an abrupt crash from above the gilded auditorium ceiling.",
         suspects: [
-          { name: "Soprano", icon: "🎭", letter: "S" },
-          { name: "Maestro", icon: "🎼", letter: "M" },
-          { name: "Stagehand", icon: "🔦", letter: "H" }
+          { name: "Soprano", icon: "🎭" },
+          { name: "Maestro", icon: "🎼" },
+          { name: "Stagehand", icon: "🔦" }
         ],
         weapons: [
           { name: "Stage Dagger", icon: "🗡️" },
@@ -927,30 +894,29 @@
           { name: "The Catwalk", icon: "🪜" }
         ],
         clues: [
-          "The Maestro (🎼) was conducting musicians down in the Orchestra Pit (🎻).",
-          "The Chandelier Weight (⚖️) was rigged and dropped directly from The Catwalk (🪜).",
-          "The Soprano (🎭) remained before her mirrors in the Dressing Room (💄).",
-          "The fatal blow was blunt impact trauma from a fallen ballast."
+          "The Maestro (🎼) was conducting in the Orchestra Pit (🎻) holding the Silk Scarf (🧣).",
+          "The Soprano (🎭) was rehearsing notes in the Dressing Room (💄).",
+          "The Stage Dagger (🗡️) was on the mirror vanity in the Dressing Room (💄).",
+          "A massive Chandelier Weight (⚖️) was dropped fatally on The Catwalk (🪜)."
         ],
-        hint: "Look up toward the ceiling. Who lacked an alibi down on stage or in the dressing room?",
+        hint: "Downstairs rooms are accounted for. Who was operating high in the rafters?",
         solveSteps: [
-          "Maestro (🎼) = Orchestra Pit (🎻). Soprano (🎭) = Dressing Room (💄).",
-          "Stagehand (🔦) must have been up on The Catwalk (🪜).",
-          "The Chandelier Weight (⚖️) was located on The Catwalk, proving the Stagehand had the Weight.",
-          "The blunt impact trauma confirms the Chandelier Weight was the lethal weapon.",
-          "Stagehand + Chandelier Weight + The Catwalk solves the case."
+          "Maestro (🎼) = Orchestra Pit (🎻) with Silk Scarf (🧣).",
+          "Soprano (🎭) = Dressing Room (💄) with Stage Dagger (🗡️).",
+          "By elimination, Stagehand (🔦) was on The Catwalk (🪜) with the Chandelier Weight (⚖️).",
+          "The Chandelier Weight on The Catwalk was the fatal weapon, proving the Stagehand is the Killer."
         ],
         solution: { suspect: "Stagehand", weapon: "Chandelier Weight", location: "The Catwalk" }
       },
       {
         id: 9,
         title: "The Alchemist's Crypt",
-        difficulty: "Expert",
-        story: "In a subterranean laboratory, the formula for gold brought a deadly end to the head master.",
+        difficulty: "Medium",
+        story: "In the dungeon laboratory, a recipe for the philosopher's stone resulted in sudden treachery.",
         suspects: [
-          { name: "Adept", icon: "🔮", letter: "A" },
-          { name: "Monk", icon: "🕯️", letter: "M" },
-          { name: "Merchant", icon: "📜", letter: "C" }
+          { name: "Adept", icon: "🔮" },
+          { name: "Monk", icon: "🕯️" },
+          { name: "Merchant", icon: "📜" }
         ],
         weapons: [
           { name: "Brimstone Gas", icon: "♨️" },
@@ -963,30 +929,29 @@
           { name: "Scriptorium", icon: "🪶" }
         ],
         clues: [
-          "The Monk (🕯️) was copying sacred scriptures in the Scriptorium (🪶) all evening.",
-          "The Silver Athame (🗡️) was mounted undisturbed upon the Sanctum Altar (⛪).",
-          "The Merchant (📜) was locked in negotiation down in the Dungeon Cell (🗝️).",
-          "The victim had clear lungs and no cuts, but suffered severe burns from Molten Lead (🫗)."
+          "The Monk (🕯️) was copying texts in the Scriptorium (🪶) near a vial of Brimstone Gas (♨️).",
+          "The Adept (🔮) was performing rites at the Sanctum Altar (⛪).",
+          "The Silver Athame (🗡️) was laid upon the Sanctum Altar (⛪).",
+          "Fatal burns from Molten Lead (🫗) were discovered inside the Dungeon Cell (🗝️)."
         ],
-        hint: "Match the undisturbed dagger to its holy site, then deduce where the liquid metal was poured.",
+        hint: "The Monk and Adept are cleared with their respective items. Who was locked in the dungeon cell?",
         solveSteps: [
-          "Monk (🕯️) = Scriptorium (🪶). Merchant (📜) = Dungeon Cell (🗝️).",
-          "This places the Adept (🔮) at the Sanctum Altar (⛪).",
-          "The Silver Athame (🗡️) was on the Sanctum Altar, which was Adept's station.",
-          "The murder weapon was Molten Lead (🫗).",
-          "Since Adept had the Athame on the Altar, the Molten Lead had to be in the hands of the Merchant down in the Dungeon Cell."
+          "Monk (🕯️) = Scriptorium (🪶) with Brimstone Gas (♨️).",
+          "Adept (🔮) = Sanctum Altar (⛪) with Silver Athame (🗡️).",
+          "By elimination, Merchant (📜) was in the Dungeon Cell (🗝️) with Molten Lead (🫗).",
+          "Molten Lead killed the victim in the Dungeon Cell, identifying the Merchant as the Killer."
         ],
         solution: { suspect: "Merchant", weapon: "Molten Lead", location: "Dungeon Cell" }
       },
       {
         id: 10,
         title: "The Midnight Masquerade",
-        difficulty: "Mastermind",
-        story: "Behind Venetian velvet masks, one royal guest settled a generational blood debt.",
+        difficulty: "Medium",
+        story: "Amidst masked dancers and harpsichord melodies, a poisoned sting ended a family rivalry.",
         suspects: [
-          { name: "Duke", icon: "👑", letter: "D" },
-          { name: "Jester", icon: "🃏", letter: "J" },
-          { name: "Baroness", icon: "🦚", letter: "B" }
+          { name: "Duke", icon: "👑" },
+          { name: "Jester", icon: "🃏" },
+          { name: "Baroness", icon: "🦚" }
         ],
         weapons: [
           { name: "Poisoned Needle", icon: "🪡" },
@@ -999,28 +964,726 @@
           { name: "Wine Cellar", icon: "🍾" }
         ],
         clues: [
-          "The Baroness (🦚) danced in plain view across the crowded Ballroom (💃).",
-          "The Stiletto (🗡️) was found wiped clean out on the Terrace Garden (🪴).",
-          "The Jester (🃏) was performing acrobatic routines in the Terrace Garden (🪴).",
-          "A microscopic puncture and rapid cyanosis proved the Poisoned Needle (🪡) was used.",
-          "The Heavy Goblet (🏆) was resting untouched on the Ballroom bar."
+          "The Baroness (🦚) was dancing in the Ballroom (💃) holding the Heavy Goblet (🏆).",
+          "The Jester (🃏) was juggling on the Terrace Garden (🪴).",
+          "The Stiletto (🗡️) was found on the marble ledge of the Terrace Garden (🪴).",
+          "A puncture from the Poisoned Needle (🪡) proved fatal in the Wine Cellar (🍾)."
         ],
-        hint: "Two people have air-tight public alibis. Who slipped downstairs where the toxic trap was set?",
+        hint: "Two suspects are in the public garden and ballroom. Who slipped into the wine cellar?",
         solveSteps: [
-          "Baroness (🦚) = Ballroom (💃). Jester (🃏) = Terrace Garden (🪴).",
-          "This leaves the Duke (👑) in the Wine Cellar (🍾).",
-          "The Jester on the Terrace Garden matches with the Stiletto (🗡️) found there.",
-          "The Heavy Goblet was in the Ballroom with the Baroness.",
-          "The lethal weapon was the Poisoned Needle (🪡), which means Duke in the Wine Cellar carried out the murder."
+          "Baroness (🦚) = Ballroom (💃) with Heavy Goblet (🏆).",
+          "Jester (🃏) = Terrace Garden (🪴) with Stiletto (🗡️).",
+          "By elimination, Duke (👑) was in the Wine Cellar (🍾) with the Poisoned Needle (🪡).",
+          "The Poisoned Needle caused death in the Wine Cellar, revealing the Duke as the Killer."
         ],
         solution: { suspect: "Duke", weapon: "Poisoned Needle", location: "Wine Cellar" }
+      },
+      {
+        id: 11,
+        title: "The Royal Bakery Treason",
+        difficulty: "Medium",
+        story: "Dawn arrived with burnt loaves and a royal taster collapsed near the cooling racks.",
+        suspects: [
+          { name: "Chef Pierre", icon: "👨‍🍳" },
+          { name: "Lady Genevieve", icon: "👑" },
+          { name: "Miller Giles", icon: "🌾" }
+        ],
+        weapons: [
+          { name: "Rolling Pin", icon: "🥖" },
+          { name: "Arsenic Sugar", icon: "🧂" },
+          { name: "Carving Knife", icon: "🔪" }
+        ],
+        locations: [
+          { name: "Flour Mill", icon: "🛖" },
+          { name: "Royal Kitchen", icon: "🍲" },
+          { name: "Pantry", icon: "🥫" }
+        ],
+        clues: [
+          "Miller Giles (🌾) was loading grain at the Flour Mill (🛖) holding the Carving Knife (🔪).",
+          "Lady Genevieve (👑) was taking inventory in the Pantry (🥫).",
+          "The Rolling Pin (🥖) was left on the pantry shelves (🥫).",
+          "The royal taster was poisoned by Arsenic Sugar (🧂) inside the Royal Kitchen (🍲)."
+        ],
+        hint: "Account for the Mill and the Pantry first. Who was alone in the kitchen with the sweetened poison?",
+        solveSteps: [
+          "Miller Giles (🌾) = Flour Mill (🛖) with Carving Knife (🔪).",
+          "Lady Genevieve (👑) = Pantry (🥫) with Rolling Pin (🥖).",
+          "By elimination, Chef Pierre (👨‍🍳) was in the Royal Kitchen (🍲) with Arsenic Sugar (🧂).",
+          "Arsenic Sugar claimed the victim in the Royal Kitchen, convicting Chef Pierre as the Killer."
+        ],
+        solution: { suspect: "Chef Pierre", weapon: "Arsenic Sugar", location: "Royal Kitchen" }
+      },
+      {
+        id: 12,
+        title: "The Sunken Submersible",
+        difficulty: "Medium",
+        story: "In an underwater research capsule, a cabin pressure warning concealed a deliberate murder.",
+        suspects: [
+          { name: "Commander Ross", icon: "🎖️" },
+          { name: "Engineer Lin", icon: "⚙️" },
+          { name: "Biologist Diaz", icon: "🔬" }
+        ],
+        weapons: [
+          { name: "Spanner Wrench", icon: "🔧" },
+          { name: "CO2 Scrubber Valve", icon: "🧯" },
+          { name: "Dive Flare", icon: "🧨" }
+        ],
+        locations: [
+          { name: "Torpedo Bay", icon: "🚀" },
+          { name: "Engine Room", icon: "🚢" },
+          { name: "Sonar Deck", icon: "📡" }
+        ],
+        clues: [
+          "Engineer Lin (⚙️) was checking turbines in the Engine Room (🚢) carrying the Spanner Wrench (🔧).",
+          "Biologist Diaz (🔬) was logging deep frequencies on the Sonar Deck (📡).",
+          "The Dive Flare (🧨) was secured in the Sonar Deck (📡) lockers.",
+          "Suffocation via the CO2 Scrubber Valve (🧯) occurred in the Torpedo Bay (🚀)."
+        ],
+        hint: "The Engine Room and Sonar Deck have matching personnel. Who sabotaged the valve in the Torpedo Bay?",
+        solveSteps: [
+          "Engineer Lin (⚙️) = Engine Room (🚢) with Spanner Wrench (🔧).",
+          "Biologist Diaz (🔬) = Sonar Deck (📡) with Dive Flare (🧨).",
+          "By elimination, Commander Ross (🎖️) was in Torpedo Bay (🚀) with CO2 Scrubber Valve (🧯).",
+          "The valve caused death in the Torpedo Bay, identifying Commander Ross as the Killer."
+        ],
+        solution: { suspect: "Commander Ross", weapon: "CO2 Scrubber Valve", location: "Torpedo Bay" }
+      },
+      {
+        id: 13,
+        title: "The High Roller Casino",
+        difficulty: "Medium",
+        story: "Behind the VIP velvet curtains, a high-stakes cheat had their final hand dealt.",
+        suspects: [
+          { name: "Pit Boss Vince", icon: "🎰" },
+          { name: "Dealer Chloe", icon: "🃏" },
+          { name: "Tycoon Sterling", icon: "💎" }
+        ],
+        weapons: [
+          { name: "Loaded Cane", icon: "🦯" },
+          { name: "Roulette Ball Slung", icon: "⚪" },
+          { name: "Cyanide Chip", icon: "🪙" }
+        ],
+        locations: [
+          { name: "Cash Vault", icon: "🔐" },
+          { name: "Poker Suite", icon: "♠️" },
+          { name: "Rooftop Lounge", icon: "🍸" }
+        ],
+        clues: [
+          "Pit Boss Vince (🎰) was auditing safes in the Cash Vault (🔐) holding the Roulette Ball Slung (⚪).",
+          "Dealer Chloe (🃏) was dealing cards in the Poker Suite (♠️).",
+          "The Cyanide Chip (🪙) was recovered from the felt table in the Poker Suite (♠️).",
+          "A blunt strike from the Loaded Cane (🦯) ended the victim's life in the Rooftop Lounge (🍸)."
+        ],
+        hint: "Notice who is in the Vault and Poker Suite. Who carried the cane to the penthouse roof?",
+        solveSteps: [
+          "Pit Boss Vince (🎰) = Cash Vault (🔐) with Roulette Ball Slung (⚪).",
+          "Dealer Chloe (🃏) = Poker Suite (♠️) with Cyanide Chip (🪙).",
+          "By elimination, Tycoon Sterling (💎) was in the Rooftop Lounge (🍸) with the Loaded Cane (🦯).",
+          "The Loaded Cane was the murder weapon in the Rooftop Lounge, proving Tycoon Sterling is the Killer."
+        ],
+        solution: { suspect: "Tycoon Sterling", weapon: "Loaded Cane", location: "Rooftop Lounge" }
+      },
+      {
+        id: 14,
+        title: "The Medieval Armory",
+        difficulty: "Medium",
+        story: "While squires polished tournament shields, an elder knight was felled in the keep.",
+        suspects: [
+          { name: "Blacksmith Hal", icon: "⚒️" },
+          { name: "Lord Galahad", icon: "🛡️" },
+          { name: "Archer Robin", icon: "🏹" }
+        ],
+        weapons: [
+          { name: "Battleaxe", icon: "🪓" },
+          { name: "Bowstring Garrote", icon: "🪢" },
+          { name: "Iron Dagger", icon: "🗡️" }
+        ],
+        locations: [
+          { name: "Forge", icon: "🔥" },
+          { name: "Archery Range", icon: "🎯" },
+          { name: "Throne Hall", icon: "👑" }
+        ],
+        clues: [
+          "Archer Robin (🏹) was practicing on the Archery Range (🎯) with the Bowstring Garrote (🪢).",
+          "Lord Galahad (🛡️) was standing vigil in the Throne Hall (👑).",
+          "The Iron Dagger (🗡️) was lying upon the royal dais in the Throne Hall (👑).",
+          "A devastating cleave from the Battleaxe (🪓) occurred in the Forge (🔥)."
+        ],
+        hint: "The Hall and the Range are cleared. Who held the heavy axe inside the heat of the forge?",
+        solveSteps: [
+          "Archer Robin (🏹) = Archery Range (🎯) with Bowstring Garrote (🪢).",
+          "Lord Galahad (🛡️) = Throne Hall (👑) with Iron Dagger (🗡️).",
+          "By elimination, Blacksmith Hal (⚒️) was in the Forge (🔥) with the Battleaxe (🪓).",
+          "The Battleaxe killed the victim in the Forge, establishing Blacksmith Hal as the Killer."
+        ],
+        solution: { suspect: "Blacksmith Hal", weapon: "Battleaxe", location: "Forge" }
+      },
+      {
+        id: 15,
+        title: "The Grand Bazaar Carpet Trap",
+        difficulty: "Medium",
+        story: "Between rolled silk tapestries and aromatic saffron bins, a rug merchant met a sharp fate.",
+        suspects: [
+          { name: "Merchant Kasim", icon: "👳" },
+          { name: "Dyer Fatima", icon: "🎨" },
+          { name: "Guard Tariq", icon: "🗡️" }
+        ],
+        weapons: [
+          { name: "Scimitar", icon: "⚔️" },
+          { name: "Indigo Dye Toxin", icon: "🧪" },
+          { name: "Weaving Shuttle", icon: "🧶" }
+        ],
+        locations: [
+          { name: "Dye Vats", icon: "🪣" },
+          { name: "Spice Stall", icon: "🌶️" },
+          { name: "Caravan Gate", icon: "🐪" }
+        ],
+        clues: [
+          "Dyer Fatima (🎨) was stirring pigments at the Dye Vats (🪣) with Indigo Dye Toxin (🧪).",
+          "Guard Tariq (🗡️) was checking merchants at the Caravan Gate (🐪).",
+          "The Scimitar (⚔️) was sheathed at the Caravan Gate (🐪).",
+          "The victim was impaled with the pointed Weaving Shuttle (🧶) in the Spice Stall (🌶️)."
+        ],
+        hint: "Dye Vats and Caravan Gate are fully resolved. Who was at the Spice Stall with the shuttle?",
+        solveSteps: [
+          "Dyer Fatima (🎨) = Dye Vats (🪣) with Indigo Dye Toxin (🧪).",
+          "Guard Tariq (🗡️) = Caravan Gate (🐪) with Scimitar (⚔️).",
+          "By elimination, Merchant Kasim (👳) was in the Spice Stall (🌶️) with the Weaving Shuttle (🧶).",
+          "The shuttle killed the merchant at the Spice Stall, naming Merchant Kasim as the Killer."
+        ],
+        solution: { suspect: "Merchant Kasim", weapon: "Weaving Shuttle", location: "Spice Stall" }
+      },
+      {
+        id: 16,
+        title: "The Arctic Weather Station",
+        difficulty: "Hard",
+        story: "During a blizzard, communication wires snapped and the station meteorologist never reported in.",
+        suspects: [
+          { name: "Dr. Nansen", icon: "❄️" },
+          { name: "Pilot Scott", icon: "✈️" },
+          { name: "Mechanic Yuri", icon: "🔧" }
+        ],
+        weapons: [
+          { name: "Ice Axe", icon: "⛏️" },
+          { name: "Flare Spike", icon: "🧨" },
+          { name: "Frozen Cable", icon: "🔌" }
+        ],
+        locations: [
+          { name: "Hangar", icon: "🛫" },
+          { name: "Generator Shack", icon: "💡" },
+          { name: "Radio Mast", icon: "📡" }
+        ],
+        clues: [
+          "Mechanic Yuri (🔧) was thawing fuel in the Generator Shack (💡) with the Frozen Cable (🔌).",
+          "Pilot Scott (✈️) was waiting inside the Hangar (🛫).",
+          "The Flare Spike (🧨) was found stored inside the Hangar (🛫).",
+          "The victim was struck fatally by the Ice Axe (⛏️) out at the Radio Mast (📡)."
+        ],
+        hint: "The Hangar and Generator Shack are accounted for. Who was out in the snow at the Radio Mast?",
+        solveSteps: [
+          "Mechanic Yuri (🔧) = Generator Shack (💡) with Frozen Cable (🔌).",
+          "Pilot Scott (✈️) = Hangar (🛫) with Flare Spike (🧨).",
+          "By elimination, Dr. Nansen (❄️) was at the Radio Mast (📡) with the Ice Axe (⛏️).",
+          "The Ice Axe was used at the Radio Mast, proving Dr. Nansen is the Killer."
+        ],
+        solution: { suspect: "Dr. Nansen", weapon: "Ice Axe", location: "Radio Mast" }
+      },
+      {
+        id: 17,
+        title: "The Haunted Manor Seance",
+        difficulty: "Hard",
+        story: "When the candles were relit after the invocation, the psychic remained slumped forever.",
+        suspects: [
+          { name: "Medium Clara", icon: "🔮" },
+          { name: "Lord Ravenscroft", icon: "🦇" },
+          { name: "Widow Martha", icon: "🧕" }
+        ],
+        weapons: [
+          { name: "Silver Candlestick", icon: "🕯️" },
+          { name: "Ouija Pointer", icon: "📐" },
+          { name: "Belladonna Tea", icon: "☕" }
+        ],
+        locations: [
+          { name: "Parlor", icon: "🛋️" },
+          { name: "Conservatory", icon: "🌿" },
+          { name: "Attic", icon: "📦" }
+        ],
+        clues: [
+          "Medium Clara (🔮) was in the Conservatory (🌿) with the Ouija Pointer (📐).",
+          "Widow Martha (🧕) was weeping in the Attic (📦).",
+          "The Belladonna Tea (☕) was found cold in the Attic (📦).",
+          "A blunt strike from the Silver Candlestick (🕯️) occurred in the Parlor (🛋️)."
+        ],
+        hint: "The Attic and Conservatory have clear occupants. Who wielded the heavy candlestick in the Parlor?",
+        solveSteps: [
+          "Medium Clara (🔮) = Conservatory (🌿) with Ouija Pointer (📐).",
+          "Widow Martha (🧕) = Attic (📦) with Belladonna Tea (☕).",
+          "By elimination, Lord Ravenscroft (🦇) was in the Parlor (🛋️) with the Silver Candlestick (🕯️).",
+          "The candlestick struck the victim in the Parlor, confirming Lord Ravenscroft as the Killer."
+        ],
+        solution: { suspect: "Lord Ravenscroft", weapon: "Silver Candlestick", location: "Parlor" }
+      },
+      {
+        id: 18,
+        title: "The Cinema Premiere Poisoning",
+        difficulty: "Hard",
+        story: "As the opening reel spun, the film producer choked on salted caramel popcorn in the dark.",
+        suspects: [
+          { name: "Director Fritz", icon: "🎬" },
+          { name: "Starlet Marilyn", icon: "💋" },
+          { name: "Projectionist Otto", icon: "📽️" }
+        ],
+        weapons: [
+          { name: "Film Splicer", icon: "✂️" },
+          { name: "Strychnine Butter", icon: "🧈" },
+          { name: "Heavy Reel", icon: "🎞️" }
+        ],
+        locations: [
+          { name: "Projection Booth", icon: "🎦" },
+          { name: "Auditorium", icon: "💺" },
+          { name: "Lobby Bar", icon: "🍿" }
+        ],
+        clues: [
+          "Projectionist Otto (📽️) was running film in the Projection Booth (🎦) with the Heavy Reel (🎞️).",
+          "Starlet Marilyn (💋) was greeting photographers in the Lobby Bar (🍿).",
+          "The Film Splicer (✂️) was discarded on a counter in the Lobby Bar (🍿).",
+          "Ingestion of Strychnine Butter (🧈) occurred in the center Auditorium (💺)."
+        ],
+        hint: "The booth and the lobby bar are resolved. Who took their seat in the auditorium with poison butter?",
+        solveSteps: [
+          "Projectionist Otto (📽️) = Projection Booth (🎦) with Heavy Reel (🎞️).",
+          "Starlet Marilyn (💋) = Lobby Bar (🍿) with Film Splicer (✂️).",
+          "By elimination, Director Fritz (🎬) was in the Auditorium (💺) with Strychnine Butter (🧈).",
+          "Strychnine Butter poisoned the producer in the Auditorium, revealing Director Fritz as the Killer."
+        ],
+        solution: { suspect: "Director Fritz", weapon: "Strychnine Butter", location: "Auditorium" }
+      },
+      {
+        id: 19,
+        title: "The Venetian Glassmaker",
+        difficulty: "Hard",
+        story: "A master glassblower fell against the cooling kiln before unveiling their masterpiece.",
+        suspects: [
+          { name: "Maestro Marco", icon: "🎭" },
+          { name: "Apprentice Gino", icon: "🔥" },
+          { name: "Patron Lorenzo", icon: "💰" }
+        ],
+        weapons: [
+          { name: "Blowpipe", icon: "🥖" },
+          { name: "Glass Shard", icon: "💎" },
+          { name: "Sulfur Powder", icon: "🧪" }
+        ],
+        locations: [
+          { name: "Furnace Hall", icon: "🌋" },
+          { name: "Canal Dock", icon: "🛶" },
+          { name: "Showroom", icon: "🏺" }
+        ],
+        clues: [
+          "Patron Lorenzo (💰) was admiring vases in the Showroom (🏺) carrying the Glass Shard (💎).",
+          "Apprentice Gino (🔥) was loading crates on the Canal Dock (🛶).",
+          "The Sulfur Powder (🧪) was sitting on barrels at the Canal Dock (🛶).",
+          "A puncture from the steel Blowpipe (🥖) occurred in the Furnace Hall (🌋)."
+        ],
+        hint: "Showroom and Canal Dock are accounted for. Who was by the fire in the Furnace Hall with the pipe?",
+        solveSteps: [
+          "Patron Lorenzo (💰) = Showroom (🏺) with Glass Shard (💎).",
+          "Apprentice Gino (🔥) = Canal Dock (🛶) with Sulfur Powder (🧪).",
+          "By elimination, Maestro Marco (🎭) was in Furnace Hall (🌋) with the Blowpipe (🥖).",
+          "The Blowpipe was the murder weapon in Furnace Hall, confirming Maestro Marco as the Killer."
+        ],
+        solution: { suspect: "Maestro Marco", weapon: "Blowpipe", location: "Furnace Hall" }
+      },
+      {
+        id: 20,
+        title: "The Space Station Airlock",
+        difficulty: "Hard",
+        story: "Telemetry showed a sudden pressure decompression. The flight engineer was trapped outside.",
+        suspects: [
+          { name: "Captain Vega", icon: "👩‍🚀" },
+          { name: "Specialist Thorne", icon: "🛰️" },
+          { name: "Doctor Alexei", icon: "👨‍⚕️" }
+        ],
+        weapons: [
+          { name: "Plasma Torch", icon: "🔥" },
+          { name: "Tether Cable", icon: "🪢" },
+          { name: "Sedative Syringe", icon: "💉" }
+        ],
+        locations: [
+          { name: "Airlock Bay", icon: "🚪" },
+          { name: "Command Bridge", icon: "🖥️" },
+          { name: "Med-Lab", icon: "🏥" }
+        ],
+        clues: [
+          "Doctor Alexei (👨‍⚕️) was sterilizing vials in the Med-Lab (🏥) with the Sedative Syringe (💉).",
+          "Captain Vega (👩‍🚀) was monitoring telemetry on the Command Bridge (🖥️).",
+          "The Tether Cable (🪢) was looped on the console of the Command Bridge (🖥️).",
+          "Burns from the Plasma Torch (🔥) forced an emergency breach in the Airlock Bay (🚪)."
+        ],
+        hint: "The Med-Lab and Command Bridge are fully mapped. Who operated the plasma torch in the airlock?",
+        solveSteps: [
+          "Doctor Alexei (👨‍⚕️) = Med-Lab (🏥) with Sedative Syringe (💉).",
+          "Captain Vega (👩‍🚀) = Command Bridge (🖥️) with Tether Cable (🪢).",
+          "By elimination, Specialist Thorne (🛰️) was in Airlock Bay (🚪) with Plasma Torch (🔥).",
+          "The Plasma Torch ruptured the seal in Airlock Bay, identifying Specialist Thorne as the Killer."
+        ],
+        solution: { suspect: "Specialist Thorne", weapon: "Plasma Torch", location: "Airlock Bay" }
+      },
+      {
+        id: 21,
+        title: "The Clockwork Automaton Gala",
+        difficulty: "Expert",
+        story: "When the mechanical brass pianist finished its sonata, the inventor was found lifeless behind it.",
+        suspects: [
+          { name: "Baroness Von Klaus", icon: "⚙️" },
+          { name: "Rival inventor Felix", icon: "🎩" },
+          { name: "Watchmaker Hans", icon: "🧰" }
+        ],
+        weapons: [
+          { name: "Winding Key", icon: "🗝️" },
+          { name: "Spring Wire", icon: "➰" },
+          { name: "Mercury Drop", icon: "🧪" }
+        ],
+        locations: [
+          { name: "Grand Foyer", icon: "🏛️" },
+          { name: "Workshop Cellar", icon: "🔨" },
+          { name: "Garden Pavilion", icon: "🌺" }
+        ],
+        clues: [
+          "Watchmaker Hans (🧰) was in the Workshop Cellar (🔨) holding the Mercury Drop (🧪).",
+          "Baroness Von Klaus (⚙️) was entertaining in the Grand Foyer (🏛️).",
+          "The Winding Key (🗝️) was left beside champagne glasses in the Grand Foyer (🏛️).",
+          "Strangulation via Spring Wire (➰) took place inside the Garden Pavilion (🌺)."
+        ],
+        hint: "The Cellar and Grand Foyer are accounted for. Who waited in the Garden Pavilion with the wire?",
+        solveSteps: [
+          "Watchmaker Hans (🧰) = Workshop Cellar (🔨) with Mercury Drop (🧪).",
+          "Baroness Von Klaus (⚙️) = Grand Foyer (🏛️) with Winding Key (🗝️).",
+          "By elimination, Rival Felix (🎩) was in the Garden Pavilion (🌺) with Spring Wire (➰).",
+          "The Spring Wire took the inventor's life in the Garden Pavilion, proving Felix is the Killer."
+        ],
+        solution: { suspect: "Rival inventor Felix", weapon: "Spring Wire", location: "Garden Pavilion" }
+      },
+      {
+        id: 22,
+        title: "The Royal Menagerie",
+        difficulty: "Expert",
+        story: "The imperial falconer was found locked inside the aviary during the sovereign's hunt.",
+        suspects: [
+          { name: "Falconer Boris", icon: "🦅" },
+          { name: "Beastmaster Leo", icon: "🦁" },
+          { name: "Huntress Diana", icon: "🏹" }
+        ],
+        weapons: [
+          { name: "Iron Whip", icon: "🦯" },
+          { name: "Venom Dart", icon: "🎯" },
+          { name: "Heavy Chain", icon: "⛓️" }
+        ],
+        locations: [
+          { name: "Predator Pit", icon: "🐾" },
+          { name: "Royal Aviary", icon: "🪶" },
+          { name: "Hunting Lodge", icon: "🛖" }
+        ],
+        clues: [
+          "Beastmaster Leo (🦁) was feeding panthers in the Predator Pit (🐾) with the Iron Whip (🦯).",
+          "Huntress Diana (🏹) was cleaning leather in the Hunting Lodge (🛖).",
+          "The Heavy Chain (⛓️) was locked in a chest in the Hunting Lodge (🛖).",
+          "A puncture from the Venom Dart (🎯) caused sudden paralysis inside the Royal Aviary (🪶)."
+        ],
+        hint: "Predator Pit and Hunting Lodge are cleared. Who entered the Aviary with the lethal dart?",
+        solveSteps: [
+          "Beastmaster Leo (🦁) = Predator Pit (🐾) with Iron Whip (🦯).",
+          "Huntress Diana (🏹) = Hunting Lodge (🛖) with Heavy Chain (⛓️).",
+          "By elimination, Falconer Boris (🦅) was in Royal Aviary (🪶) with Venom Dart (🎯).",
+          "The Venom Dart poisoned the victim in the Aviary, convicting Falconer Boris as the Killer."
+        ],
+        solution: { suspect: "Falconer Boris", weapon: "Venom Dart", location: "Royal Aviary" }
+      },
+      {
+        id: 23,
+        title: "The Desert Rail Ambush",
+        difficulty: "Expert",
+        story: "While the gold-laden locomotive took on water at the cistern, the engineer was betrayed.",
+        suspects: [
+          { name: "Sheriff Morgan", icon: "🤠" },
+          { name: "Bandit Cole", icon: "🐎" },
+          { name: "Preacher Paul", icon: "📖" }
+        ],
+        weapons: [
+          { name: "Colt Revolver", icon: "🔫" },
+          { name: "Dynamite Stick", icon: "🧨" },
+          { name: "Bowie Knife", icon: "🔪" }
+        ],
+        locations: [
+          { name: "Water Tower", icon: "🚰" },
+          { name: "Caboose", icon: "🚂" },
+          { name: "Station Depot", icon: "🏚️" }
+        ],
+        clues: [
+          "Preacher Paul (📖) was praying on the platform of the Station Depot (🏚️) holding the Dynamite Stick (🧨).",
+          "Sheriff Morgan (🤠) was checking saddles by the Water Tower (🚰).",
+          "The Colt Revolver (🔫) was leaning on a beam by the Water Tower (🚰).",
+          "A fatal strike from the Bowie Knife (🔪) occurred inside the Caboose (🚂)."
+        ],
+        hint: "Depot and Water Tower are accounted for. Who was hidden in the Caboose with the knife?",
+        solveSteps: [
+          "Preacher Paul (📖) = Station Depot (🏚️) with Dynamite Stick (🧨).",
+          "Sheriff Morgan (🤠) = Water Tower (🚰) with Colt Revolver (🔫).",
+          "By elimination, Bandit Cole (🐎) was in the Caboose (🚂) with the Bowie Knife (🔪).",
+          "The Bowie Knife killed the engineer in the Caboose, naming Bandit Cole as the Killer."
+        ],
+        solution: { suspect: "Bandit Cole", weapon: "Bowie Knife", location: "Caboose" }
+      },
+      {
+        id: 24,
+        title: "The Monastery Vineyard",
+        difficulty: "Expert",
+        story: "Autumn grape harvest came to a halt when the cellar master did not emerge from the casks.",
+        suspects: [
+          { name: "Prior Thomas", icon: "✝️" },
+          { name: "Brother Bernard", icon: "🍇" },
+          { name: "Vintner Stefan", icon: "🍷" }
+        ],
+        weapons: [
+          { name: "Pruning Hook", icon: "🪝" },
+          { name: "Spiked Mallet", icon: "🔨" },
+          { name: "Deadly Nightshade", icon: "🌿" }
+        ],
+        locations: [
+          { name: "Wine Vault", icon: "🏺" },
+          { name: "Pressing Floor", icon: "🪵" },
+          { name: "Herb Garden", icon: "🌱" }
+        ],
+        clues: [
+          "Prior Thomas (✝️) was harvesting tea in the Herb Garden (🌱) carrying Deadly Nightshade (🌿).",
+          "Brother Bernard (🍇) was crushing grapes on the Pressing Floor (🪵).",
+          "The Spiked Mallet (🔨) was resting beside the vats on the Pressing Floor (🪵).",
+          "A severe wound from the Pruning Hook (🪝) was discovered inside the Wine Vault (🏺)."
+        ],
+        hint: "The Herb Garden and Pressing Floor are resolved. Who held the pruning hook down in the vault?",
+        solveSteps: [
+          "Prior Thomas (✝️) = Herb Garden (🌱) with Deadly Nightshade (🌿).",
+          "Brother Bernard (🍇) = Pressing Floor (🪵) with Spiked Mallet (🔨).",
+          "By elimination, Vintner Stefan (🍷) was in Wine Vault (🏺) with Pruning Hook (🪝).",
+          "The Pruning Hook was used fatally in the Wine Vault, identifying Vintner Stefan as the Killer."
+        ],
+        solution: { suspect: "Vintner Stefan", weapon: "Pruning Hook", location: "Wine Vault" }
+      },
+      {
+        id: 25,
+        title: "The Cyberpunk Neon Clinic",
+        difficulty: "Expert",
+        story: "Under buzzing neon signs, an illicit cyberware ripperdoc flatlined on the operating chair.",
+        suspects: [
+          { name: "Hacker Zero", icon: "💻" },
+          { name: "Enforcer Jax", icon: "🦾" },
+          { name: "Courier Nyx", icon: "🏍️" }
+        ],
+        weapons: [
+          { name: "Thermal Scalpel", icon: "🔪" },
+          { name: "EMP Pulse Charge", icon: "🔋" },
+          { name: "Neuro-Disruptor", icon: "🧠" }
+        ],
+        locations: [
+          { name: "Operating Theater", icon: "🏥" },
+          { name: "Server Den", icon: "🖥️" },
+          { name: "Neon Alley", icon: "🌆" }
+        ],
+        clues: [
+          "Hacker Zero (💻) was cracking firewalls in the Server Den (🖥️) holding the EMP Pulse Charge (🔋).",
+          "Courier Nyx (🏍️) was refueling their bike in the Neon Alley (🌆).",
+          "The Neuro-Disruptor (🧠) was resting in the courier pouch in the Neon Alley (🌆).",
+          "Surgical cuts from the Thermal Scalpel (🔪) proved fatal inside the Operating Theater (🏥)."
+        ],
+        hint: "Server Den and Alley are fully mapped. Who wielded the thermal blade in the clinic?",
+        solveSteps: [
+          "Hacker Zero (💻) = Server Den (🖥️) with EMP Pulse Charge (🔋).",
+          "Courier Nyx (🏍️) = Neon Alley (🌆) with Neuro-Disruptor (🧠).",
+          "By elimination, Enforcer Jax (🦾) was in Operating Theater (🏥) with Thermal Scalpel (🔪).",
+          "The Thermal Scalpel murdered the doc in the Operating Theater, convicting Enforcer Jax."
+        ],
+        solution: { suspect: "Enforcer Jax", weapon: "Thermal Scalpel", location: "Operating Theater" }
+      },
+      {
+        id: 26,
+        title: "The Sun Temple Solar Eclipse",
+        difficulty: "Mastermind",
+        story: "During totality, as the moon blackened the sun, the high priest collapsed atop the stone pyramid.",
+        suspects: [
+          { name: "Priestess Maya", icon: "☀️" },
+          { name: "Warrior Kaan", icon: "🐆" },
+          { name: "Stargazer Zian", icon: "🔭" }
+        ],
+        weapons: [
+          { name: "Obsidian Blade", icon: "🗡️" },
+          { name: "Golden Scepter", icon: "🪄" },
+          { name: "Sun-Scorpion Poison", icon: "🦂" }
+        ],
+        locations: [
+          { name: "Pyramid Summit", icon: "⛰️" },
+          { name: "Sacred Cenote", icon: "🌊" },
+          { name: "Observatory Terrace", icon: "🏛️" }
+        ],
+        clues: [
+          "Stargazer Zian (🔭) was taking solar measurements on the Observatory Terrace (🏛️) with the Golden Scepter (🪄).",
+          "Warrior Kaan (🐆) was guarding the waters of the Sacred Cenote (🌊).",
+          "Sun-Scorpion Poison (🦂) was found inside a clay pot by the Sacred Cenote (🌊).",
+          "A sacrificial slice from the Obsidian Blade (🗡️) ended the high priest's life atop the Pyramid Summit (⛰️)."
+        ],
+        hint: "The Cenote and Terrace are accounted for. Who climbed to the Pyramid Summit with the obsidian blade?",
+        solveSteps: [
+          "Stargazer Zian (🔭) = Observatory Terrace (🏛️) with Golden Scepter (🪄).",
+          "Warrior Kaan (🐆) = Sacred Cenote (🌊) with Sun-Scorpion Poison (🦂).",
+          "By elimination, Priestess Maya (☀️) was at the Pyramid Summit (⛰️) with the Obsidian Blade (🗡️).",
+          "The Obsidian Blade struck at the Pyramid Summit, confirming Priestess Maya as the Killer."
+        ],
+        solution: { suspect: "Priestess Maya", weapon: "Obsidian Blade", location: "Pyramid Summit" }
+      },
+      {
+        id: 27,
+        title: "The Victorian Dirigible Sabotage",
+        difficulty: "Mastermind",
+        story: "At five thousand feet, the airship rudder jammed and the chief navigator fell from the observation bay.",
+        suspects: [
+          { name: "Captain Sterling", icon: "🧭" },
+          { name: "Engineer Murdoch", icon: "🧰" },
+          { name: "Heiress Vivienne", icon: "👒" }
+        ],
+        weapons: [
+          { name: "Bronze Wrench", icon: "🔧" },
+          { name: "Ruptured Gas Valve", icon: "🎈" },
+          { name: "Silk Choker", icon: "🧣" }
+        ],
+        locations: [
+          { name: "Gondola Bridge", icon: "🚢" },
+          { name: "Gasbag Rigging", icon: "☁️" },
+          { name: "Passenger Lounge", icon: "🛋️" }
+        ],
+        clues: [
+          "Heiress Vivienne (👒) was sipping tea in the Passenger Lounge (🛋️) carrying the Silk Choker (🧣).",
+          "Captain Sterling (🧭) was at the helm in the Gondola Bridge (🚢).",
+          "The Bronze Wrench (🔧) was resting on the Gondola Bridge (🚢) console.",
+          "Asphyxiation via the Ruptured Gas Valve (🎈) occurred inside the Gasbag Rigging (☁️)."
+        ],
+        hint: "Lounge and Bridge have clear occupants. Who climbed up to the gasbag rigging with the valve?",
+        solveSteps: [
+          "Heiress Vivienne (👒) = Passenger Lounge (🛋️) with Silk Choker (🧣).",
+          "Captain Sterling (🧭) = Gondola Bridge (🚢) with Bronze Wrench (🔧).",
+          "By elimination, Engineer Murdoch (🧰) was in Gasbag Rigging (☁️) with Ruptured Gas Valve (🎈).",
+          "The valve caused death in the Gasbag Rigging, naming Engineer Murdoch as the Killer."
+        ],
+        solution: { suspect: "Engineer Murdoch", weapon: "Ruptured Gas Valve", location: "Gasbag Rigging" }
+      },
+      {
+        id: 28,
+        title: "The Venetian Glassblower's Masque",
+        difficulty: "Mastermind",
+        story: "Carnival fireworks masked the scream of a nobleman found lifeless along the grand canal.",
+        suspects: [
+          { name: "Gondolier Dante", icon: "🛶" },
+          { name: "Marquise Isabella", icon: "🦚" },
+          { name: "Alchemist Silvio", icon: "🧪" }
+        ],
+        weapons: [
+          { name: "Glass Stiletto", icon: "🗡️" },
+          { name: "Phosphorus Flask", icon: "💥" },
+          { name: "Oar Lock", icon: "🔩" }
+        ],
+        locations: [
+          { name: "Grand Canal", icon: "🌊" },
+          { name: "Palazzo Steps", icon: "🏛️" },
+          { name: "Alchemist Vault", icon: "🗝️" }
+        ],
+        clues: [
+          "Alchemist Silvio (🧪) was mixing reagents in the Alchemist Vault (🗝️) with the Phosphorus Flask (💥).",
+          "Gondolier Dante (🛶) was rowing along the Grand Canal (🌊).",
+          "The heavy iron Oar Lock (🔩) was sitting in Dante's boat in the Grand Canal (🌊).",
+          "A puncture from the Glass Stiletto (🗡️) ended the nobleman's life on the Palazzo Steps (🏛️)."
+        ],
+        hint: "Canal and Vault are cleared. Who waited on the Palazzo Steps with the glass stiletto?",
+        solveSteps: [
+          "Alchemist Silvio (🧪) = Alchemist Vault (🗝️) with Phosphorus Flask (💥).",
+          "Gondolier Dante (🛶) = Grand Canal (🌊) with Oar Lock (🔩).",
+          "By elimination, Marquise Isabella (🦚) was on Palazzo Steps (🏛️) with Glass Stiletto (🗡️).",
+          "The Glass Stiletto killed the victim on the Palazzo Steps, proving Marquise Isabella is the Killer."
+        ],
+        solution: { suspect: "Marquise Isabella", weapon: "Glass Stiletto", location: "Palazzo Steps" }
+      },
+      {
+        id: 29,
+        title: "The Samurai Castle Tea Ceremony",
+        difficulty: "Mastermind",
+        story: "Under white blossoms, the clan lord took one sip from the ceremonial bowl and never rose.",
+        suspects: [
+          { name: "Sensei Kenji", icon: "🥋" },
+          { name: "Shinobi Ren", icon: "🥷" },
+          { name: "Lady Chiyo", icon: "🌸" }
+        ],
+        weapons: [
+          { name: "Tanto Blade", icon: "🗡️" },
+          { name: "Hemlock Powder", icon: "🍵" },
+          { name: "Iron Shuriken", icon: "⭐" }
+        ],
+        locations: [
+          { name: "Tea Pavillion", icon: "🏯" },
+          { name: "Zen Garden", icon: "🪨" },
+          { name: "Dojo", icon: "🎋" }
+        ],
+        clues: [
+          "Sensei Kenji (🥋) was meditating in the Dojo (🎋) holding the Tanto Blade (🗡️).",
+          "Shinobi Ren (🥷) was crouching behind boulders in the Zen Garden (🪨).",
+          "The Iron Shuriken (⭐) was stuck in a garden post in the Zen Garden (🪨).",
+          "Fatal Hemlock Powder (🍵) was stirred into the ceremonial matcha inside the Tea Pavillion (🏯)."
+        ],
+        hint: "The Dojo and Garden have proven occupants. Who poured the tea in the pavilion?",
+        solveSteps: [
+          "Sensei Kenji (🥋) = Dojo (🎋) with Tanto Blade (🗡️).",
+          "Shinobi Ren (🥷) = Zen Garden (🪨) with Iron Shuriken (⭐).",
+          "By elimination, Lady Chiyo (🌸) was in the Tea Pavillion (🏯) with Hemlock Powder (🍵).",
+          "Hemlock Powder in the Tea Pavillion was the fatal method, naming Lady Chiyo as the Killer."
+        ],
+        solution: { suspect: "Lady Chiyo", weapon: "Hemlock Powder", location: "Tea Pavillion" }
+      },
+      {
+        id: 30,
+        title: "The Mastermind's Grand Finale",
+        difficulty: "Mastermind",
+        story: "In the private study of the world's greatest detective, Deductive Logico faces their final challenge.",
+        suspects: [
+          { name: "Professor Mori", icon: "♟️" },
+          { name: "Duchess Raven", icon: "🦅" },
+          { name: "Inspector Gregson", icon: "🔍" }
+        ],
+        weapons: [
+          { name: "Golden Syringe", icon: "💉" },
+          { name: "Ivory Chessman", icon: "🐴" },
+          { name: "Fountain Pen Blade", icon: "✒️" }
+        ],
+        locations: [
+          { name: "Secret Library", icon: "📚" },
+          { name: "Trophy Room", icon: "🏆" },
+          { name: "Clock Balcony", icon: "🕰️" }
+        ],
+        clues: [
+          "Inspector Gregson (🔍) was searching display cases in the Trophy Room (🏆) with the Ivory Chessman (🐴).",
+          "Duchess Raven (🦅) was watching the street from the Clock Balcony (🕰️).",
+          "The Fountain Pen Blade (✒️) was left resting on the stone balustrade of the Clock Balcony (🕰️).",
+          "A microscopic puncture from the Golden Syringe (💉) caused instant death inside the Secret Library (📚)."
+        ],
+        hint: "Trophy Room and Clock Balcony are fully cleared. Who waited in the Secret Library with the syringe?",
+        solveSteps: [
+          "Inspector Gregson (🔍) = Trophy Room (🏆) with Ivory Chessman (🐴).",
+          "Duchess Raven (🦅) = Clock Balcony (🕰️) with Fountain Pen Blade (✒️).",
+          "By elimination, Professor Mori (♟️) was in Secret Library (📚) with Golden Syringe (💉).",
+          "The Golden Syringe took the victim's life in the Secret Library, concluding that Professor Mori is the Killer."
+        ],
+        solution: { suspect: "Professor Mori", weapon: "Golden Syringe", location: "Secret Library" }
       }
     ];
 
     /* =========================================================================
-       STATE MANAGEMENT
+       STATE MANAGEMENT & ENGINE
        ========================================================================= */
-    const STORAGE_KEY = "Murdle_lgrid_v3";
+    const STORAGE_KEY = "Murdle_lgrid_30_cases_v1";
     let state = {
       caseIndex: 0,
       completed: [],
@@ -1041,21 +1704,21 @@
     }
 
     /* =========================================================================
-       L-SHAPED GRID RENDERING (STRICT ICONS ONLY IN CELLS & HEADERS)
-       Vertical titles added: "WEAPONS" and "LOCATIONS"
+       L-SHAPED GRID RENDERING
+       Strictly icon-only in table cells & headers, with vertical categories
        ========================================================================= */
     function renderLGrid(c) {
       const table = document.getElementById("murdle-grid");
       let html = "";
 
-      // ROW 1: Super categories across the top
+      // Super Headers
       html += `<tr>
         <th class="corner-void" colspan="2"></th>
         <th class="cat-super-header border-right-thick" colspan="3">SUSPECTS</th>
         <th class="cat-super-header" colspan="3">LOCATIONS</th>
       </tr>`;
 
-      // ROW 2: Column Headers (Icons Only)
+      // Column Icons
       html += `<tr>
         <th class="corner-void" colspan="2"></th>`;
       c.suspects.forEach((s, idx) => {
@@ -1071,20 +1734,18 @@
       });
       html += `</tr>`;
 
-      // ROWS FOR WEAPONS (Vertical label "WEAPONS" spans 3 rows)
+      // Weapons Rows
       c.weapons.forEach((w, wIdx) => {
         const isLastRow = wIdx === c.weapons.length - 1;
         const rowClass = isLastRow ? 'border-bottom-thick' : '';
         html += `<tr>`;
         
-        // Vertical Category Header for WEAPONS
         if (wIdx === 0) {
           html += `<td rowspan="3" class="vertical-title-cell border-bottom-thick">
             <span class="vertical-text">WEAPONS</span>
           </td>`;
         }
 
-        // Weapon Row Icon
         html += `<td class="row-icon-header ${rowClass}">
           <span class="icon-badge" title="${w.name}">${w.icon}</span>
         </td>`;
@@ -1106,18 +1767,16 @@
         html += `</tr>`;
       });
 
-      // ROWS FOR LOCATIONS (Vertical label "LOCATIONS" spans 3 rows)
+      // Locations Rows
       c.locations.forEach((loc, lIdx) => {
         html += `<tr>`;
 
-        // Vertical Category Header for LOCATIONS
         if (lIdx === 0) {
           html += `<td rowspan="3" class="vertical-title-cell">
             <span class="vertical-text">LOCATIONS</span>
           </td>`;
         }
 
-        // Location Row Icon
         html += `<td class="row-icon-header">
           <span class="icon-badge" title="${loc.name}">${loc.icon}</span>
         </td>`;
@@ -1130,11 +1789,11 @@
           html += renderCell(key, colClass);
         });
 
-        // Bottom-Right Quadrant: Book Poster
+        // Book Void
         if (lIdx === 0) {
           html += `<td colspan="3" rowspan="3" class="corner-void" style="padding:4px;">
             <div class="void-poster">
-              <span>Murdle</span>
+              <span>MURDLE</span>
               <p>LOGIC MATRIX</p>
               <div style="font-size: 1.3rem; margin-top: 4px;">🕵️‍♂️</div>
             </div>
@@ -1180,7 +1839,7 @@
 
     function renderActiveCase() {
       const c = CASES[state.caseIndex];
-      caseBadge.textContent = `Case ${c.id} of 10 · ${c.difficulty}`;
+      caseBadge.textContent = `Case ${c.id} of 30 · ${c.difficulty}`;
       caseTitle.textContent = c.title;
       caseStory.textContent = c.story;
 
@@ -1203,14 +1862,14 @@
         </div>
       `).join("") + `
         <div class="solution-recap">
-          <strong>Final Verdict:</strong><br>
+          <strong>Official Solution:</strong><br>
           • Killer: ${c.solution.suspect}<br>
           • Weapon: ${c.solution.weapon}<br>
           • Crime Scene: ${c.solution.location}
         </div>
       `;
 
-      // Accusation Dropdowns
+      // Select Dropdowns
       fillSelect(accuseSuspect, c.suspects.map(s => `${s.icon} ${s.name}`), c.suspects.map(s => s.name));
       fillSelect(accuseWeapon, c.weapons.map(w => `${w.icon} ${w.name}`), c.weapons.map(w => w.name));
       fillSelect(accuseLocation, c.locations.map(l => `${l.icon} ${l.name}`), c.locations.map(l => l.name));
@@ -1248,7 +1907,7 @@
         const isLast = state.caseIndex === CASES.length - 1;
         showToast(
           "⚖️ GUILTY AS CHARGED!",
-          `Masterful deduction. ${s} committed the murder at the ${l} with the ${w}.`,
+          `Masterful deduction. ${s} committed the crime in the ${l} with the ${w}.`,
           isLast ? "Restart Journey" : "Next Case",
           () => {
             state.caseIndex = isLast ? 0 : state.caseIndex + 1;
@@ -1259,7 +1918,7 @@
       } else {
         showToast(
           "❌ INNOCENT!",
-          "Your accusation contradicts verified testimonies or forensic traces. Check your deduction grid.",
+          "Your accusation contradicts verified testimonies or forensic traces. Check your cross-marks (✕) and deductions.",
           "Review Evidence"
         );
       }
