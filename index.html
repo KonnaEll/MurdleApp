@@ -281,33 +281,6 @@
     .cell-state-1 { color: #f87171; background: rgba(239, 68, 68, 0.18); }
     .cell-state-2 { color: #4ade80; background: rgba(34, 197, 94, 0.25); box-shadow: inset 0 0 6px rgba(34, 197, 94, 0.4); }
 
-    .void-poster {
-      background: #140d11;
-      border: 1px dashed rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 6px;
-      text-align: center;
-      height: 100%;
-    }
-
-    .void-poster span {
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      font-weight: 800;
-      color: var(--red-blood);
-      letter-spacing: 1px;
-    }
-
-    .void-poster p {
-      font-size: 0.52rem;
-      color: var(--ink-dim);
-      margin-top: 2px;
-    }
-
     .grid-legend {
       display: flex;
       justify-content: center;
@@ -480,6 +453,7 @@
       line-height: 1.4;
     }
 
+    /* Pop-up for Innocent / Incorrect Accusation */
     .toast-box {
       position: fixed;
       top: 50%;
@@ -488,7 +462,7 @@
       background: #181216;
       border: 2px solid var(--grid-heavy);
       border-radius: 16px;
-      padding: 20px;
+      padding: 22px;
       width: 86%;
       max-width: 320px;
       text-align: center;
@@ -516,6 +490,7 @@
       margin-top: 14px;
       cursor: pointer;
     }
+
     /* Victory Case Closed Fullscreen Overlay */
     .victory-overlay {
       position: fixed;
@@ -716,12 +691,14 @@
     </div>
   </div>
 
-  <!-- Toast Notification Modal -->
+  <!-- Pop-up for Innocent / Incorrect Accusation -->
   <div class="toast-box" id="result-toast">
-    <div style="font-size: 2.2rem; margin-bottom: 6px;" id="toast-icon">⚖️</div>
-    <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 4px;" id="toast-title">Verdict</h3>
-    <p style="font-size: 0.8rem; color: var(--ink-dim); line-height: 1.4;" id="toast-body"></p>
-    <button class="toast-btn" id="toast-btn">Continue</button>
+    <div style="font-size: 2.4rem; margin-bottom: 8px;" id="toast-icon">🕊️</div>
+    <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 6px; color: #f87171;" id="toast-title">INNOCENT!</h3>
+    <p style="font-size: 0.82rem; color: var(--ink-dim); line-height: 1.45;" id="toast-body">
+      That suspect is entirely innocent! Your accusation contradicts verified witness statements or physical alibis. Re-read the clues carefully, check your grid marks, and try again.
+    </p>
+    <button class="toast-btn" id="toast-btn">Re-examine Clues</button>
   </div>
 
   <!-- Fullscreen Victory / Case Closed Screen -->
@@ -729,10 +706,10 @@
     <div class="case-closed-stamp">CASE CLOSED</div>
     <div class="verdict-card">
       <div class="verdict-row">
-        <span class="verdict-row-icon" id="vic-Murderer-icon"></span>
+        <span class="verdict-row-icon" id="vic-killer-icon"></span>
         <div>
           <div class="verdict-row-label">The Murderer</div>
-          <div class="verdict-row-val" id="vic-Murderer-name"></div>
+          <div class="verdict-row-val" id="vic-killer-name"></div>
         </div>
       </div>
       <div class="verdict-row">
@@ -756,10 +733,6 @@
   <script>
     /* =========================================================================
        30 VERIFIED, AIRTIGHT LOGIC MYSTERIES
-       Every case contains:
-       - 3 Suspects, 3 Weapons, 3 Locations
-       - Fully closed, unambiguous deductions with mathematically sound steps
-       - Strict icon representations
        ========================================================================= */
     const CASES = [
       {
@@ -1470,7 +1443,7 @@
         story: "When the mechanical brass pianist finished its sonata, the inventor was found lifeless behind it.",
         suspects: [
           { name: "Baroness Von Klaus", icon: "⚙️" },
-          { name: "Rival inventor Felix", icon: "🎩" },
+          { name: "Rival Felix", icon: "🎩" },
           { name: "Watchmaker Hans", icon: "🧰" }
         ],
         weapons: [
@@ -1496,7 +1469,7 @@
           "By elimination, Rival Felix (🎩) was in the Garden Pavilion (🌺) with Spring Wire (➰).",
           "The Spring Wire took the inventor's life in the Garden Pavilion, proving Felix is the Murderer."
         ],
-        solution: { suspect: "Rival inventor Felix", weapon: "Spring Wire", location: "Garden Pavilion" }
+        solution: { suspect: "Rival Felix", weapon: "Spring Wire", location: "Garden Pavilion" }
       },
       {
         id: 22,
@@ -1818,7 +1791,7 @@
     /* =========================================================================
        STATE MANAGEMENT & ENGINE
        ========================================================================= */
-    const STORAGE_KEY = "Murdle_lgrid_30_cases_v1";
+    const STORAGE_KEY = "Murdle_lgrid_30_cases_v2";
     let state = {
       caseIndex: 0,
       completed: [],
@@ -1840,7 +1813,7 @@
 
     /* =========================================================================
        L-SHAPED GRID RENDERING
-       Strictly icon-only in table cells & headers, with vertical categories
+       Bottom-Right corner is completely empty.
        ========================================================================= */
     function renderLGrid(c) {
       const table = document.getElementById("murdle-grid");
@@ -1924,6 +1897,11 @@
           html += renderCell(key, colClass);
         });
 
+        // Bottom-Right Quadrant: Empty Void
+        if (lIdx === 0) {
+          html += `<td colspan="3" rowspan="3" class="corner-void"></td>`;
+        }
+
         html += `</tr>`;
       });
 
@@ -1960,6 +1938,17 @@
     const accuseLocation = document.getElementById("accuse-location");
     const hintText = document.getElementById("hint-text");
     const solveStepsContainer = document.getElementById("solve-steps-container");
+
+    const victoryScreen = document.getElementById("victory-screen");
+    const vicKillerIcon = document.getElementById("vic-killer-icon");
+    const vicKillerName = document.getElementById("vic-killer-name");
+    const vicWeaponIcon = document.getElementById("vic-weapon-icon");
+    const vicWeaponName = document.getElementById("vic-weapon-name");
+    const vicRoomIcon = document.getElementById("vic-room-icon");
+    const vicRoomName = document.getElementById("vic-room-name");
+    const vicNextBtn = document.getElementById("vic-next-btn");
+    const resultToast = document.getElementById("result-toast");
+    const toastBtn = document.getElementById("toast-btn");
 
     function renderActiveCase() {
       const c = CASES[state.caseIndex];
@@ -2008,8 +1997,8 @@
         values.map((v, i) => `<option value="${v}">${labels[i]}</option>`).join("");
     }
 
-/* =========================================================================
-       VERDICT VERIFICATION
+    /* =========================================================================
+       VERDICT VERIFICATION & INNOCENT POP-UP
        ========================================================================= */
     document.getElementById("submit-verdict").addEventListener("click", () => {
       const c = CASES[state.caseIndex];
@@ -2018,7 +2007,7 @@
       const l = accuseLocation.value;
 
       if (!s || !w || !l) {
-        showToast("⚠️ Missing Facts", "Select the Killer, Weapon, and Crime Scene before presenting your accusation.", "Examine Grid");
+        showInnocentToast("Incomplete Accusation!", "Please select the Murderer, Weapon, and Crime Scene before submitting your verdict.");
         return;
       }
 
@@ -2028,33 +2017,48 @@
           saveState();
         }
 
+        const suspectObj = c.suspects.find(item => item.name === s);
+        const weaponObj = c.weapons.find(item => item.name === w);
+        const locationObj = c.locations.find(item => item.name === l);
+
+        vicKillerIcon.textContent = suspectObj ? suspectObj.icon : "🕵️";
+        vicKillerName.textContent = s;
+        vicWeaponIcon.textContent = weaponObj ? weaponObj.icon : "🔪";
+        vicWeaponName.textContent = w;
+        vicRoomIcon.textContent = locationObj ? locationObj.icon : "📍";
+        vicRoomName.textContent = l;
+
         const isLast = state.caseIndex === CASES.length - 1;
-        showToast(
-          "⚖️ GUILTY AS CHARGED!",
-          `Masterful deduction. ${s} committed the crime in the ${l} with the ${w}.`,
-          isLast ? "Restart Journey" : "Next Case",
-          () => {
-            state.caseIndex = isLast ? 0 : state.caseIndex + 1;
-            saveState();
-            renderActiveCase();
-          }
-        );
+        vicNextBtn.textContent = isLast ? "Restart Journey ↺" : "Next Case ▶";
+
+        victoryScreen.classList.add("active");
       } else {
-        showToast(
-          "❌ INNOCENT!",
-          "Your accusation contradicts verified testimonies or forensic traces. Check your cross-marks (✕) and deductions.",
-          "Review Evidence"
-        );
+        showInnocentToast("INNOCENT!", "That suspect is entirely innocent! Your accusation contradicts verified witness statements or physical alibis. Re-read the clues carefully, check your grid marks, and try again.");
       }
     });
 
+    function showInnocentToast(title, body) {
+      document.getElementById("toast-title").textContent = title;
+      document.getElementById("toast-body").textContent = body;
+      resultToast.classList.add("active");
+    }
+
+    toastBtn.addEventListener("click", () => {
+      resultToast.classList.remove("active");
+    });
+
+    vicNextBtn.addEventListener("click", () => {
+      victoryScreen.classList.remove("active");
+      const isLast = state.caseIndex === CASES.length - 1;
+      state.caseIndex = isLast ? 0 : state.caseIndex + 1;
+      saveState();
+      renderActiveCase();
+    });
 
     /* Modals & Drawers */
     const archiveModal = document.getElementById("archive-modal");
     const hintModal = document.getElementById("hint-modal");
     const solveModal = document.getElementById("solve-modal");
-    const resultToast = document.getElementById("result-toast");
-    let toastAction = null;
 
     document.getElementById("open-archive-btn").addEventListener("click", () => archiveModal.classList.add("active"));
     document.getElementById("close-archive").addEventListener("click", () => archiveModal.classList.remove("active"));
@@ -2067,22 +2071,6 @@
       m.addEventListener("click", (e) => {
         if (e.target === m) m.classList.remove("active");
       });
-    });
-
-    function showToast(title, body, btnText, callback = null) {
-      document.getElementById("toast-title").textContent = title;
-      document.getElementById("toast-body").textContent = body;
-      document.getElementById("toast-btn").textContent = btnText;
-      toastAction = callback;
-      resultToast.classList.add("active");
-    }
-
-    document.getElementById("toast-btn").addEventListener("click", () => {
-      resultToast.classList.remove("active");
-      if (toastAction) {
-        toastAction();
-        toastAction = null;
-      }
     });
 
     function renderCaseList() {
