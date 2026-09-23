@@ -2008,18 +2008,9 @@
         values.map((v, i) => `<option value="${v}">${labels[i]}</option>`).join("");
     }
 
-    /* =========================================================================
+/* =========================================================================
        VERDICT VERIFICATION
        ========================================================================= */
-    const victoryScreen = document.getElementById("victory-screen");
-    const vicMurdererIcon = document.getElementById("vic-Murderer-icon");
-    const vicMurdererName = document.getElementById("vic-Murderer-name");
-    const vicWeaponIcon = document.getElementById("vic-weapon-icon");
-    const vicWeaponName = document.getElementById("vic-weapon-name");
-    const vicRoomIcon = document.getElementById("vic-room-icon");
-    const vicRoomName = document.getElementById("vic-room-name");
-    const vicNextBtn = document.getElementById("vic-next-btn");
-
     document.getElementById("submit-verdict").addEventListener("click", () => {
       const c = CASES[state.caseIndex];
       const s = accuseSuspect.value;
@@ -2027,7 +2018,7 @@
       const l = accuseLocation.value;
 
       if (!s || !w || !l) {
-        alert("⚠️ Incomplete accusation! Select the Murderer, Weapon, and Crime Scene.");
+        showToast("⚠️ Missing Facts", "Select the Killer, Weapon, and Crime Scene before presenting your accusation.", "Examine Grid");
         return;
       }
 
@@ -2037,35 +2028,26 @@
           saveState();
         }
 
-        // Populate Victory Details with matching icons
-        const suspectObj = c.suspects.find(item => item.name === s);
-        const weaponObj = c.weapons.find(item => item.name === w);
-        const locationObj = c.locations.find(item => item.name === l);
-
-        vicMurdererIcon.textContent = suspectObj ? suspectObj.icon : "🕵️";
-        vicMurdererName.textContent = s;
-        vicWeaponIcon.textContent = weaponObj ? weaponObj.icon : "🔪";
-        vicWeaponName.textContent = w;
-        vicRoomIcon.textContent = locationObj ? locationObj.icon : "📍";
-        vicRoomName.textContent = l;
-
         const isLast = state.caseIndex === CASES.length - 1;
-        vicNextBtn.textContent = isLast ? "Restart Journey ↺" : "Next Case ▶";
-
-        // Show the Case Closed Stamp Screen
-        victoryScreen.classList.add("active");
+        showToast(
+          "⚖️ GUILTY AS CHARGED!",
+          `Masterful deduction. ${s} committed the crime in the ${l} with the ${w}.`,
+          isLast ? "Restart Journey" : "Next Case",
+          () => {
+            state.caseIndex = isLast ? 0 : state.caseIndex + 1;
+            saveState();
+            renderActiveCase();
+          }
+        );
       } else {
-        alert("❌ INNOCENT!\n\nYour accusation contradicts the verified testimonies or physical evidence. Double-check your deduction grid.");
+        showToast(
+          "❌ INNOCENT!",
+          "Your accusation contradicts verified testimonies or forensic traces. Check your cross-marks (✕) and deductions.",
+          "Review Evidence"
+        );
       }
     });
 
-    vicNextBtn.addEventListener("click", () => {
-      victoryScreen.classList.remove("active");
-      const isLast = state.caseIndex === CASES.length - 1;
-      state.caseIndex = isLast ? 0 : state.caseIndex + 1;
-      saveState();
-      renderActiveCase();
-    });
 
     /* Modals & Drawers */
     const archiveModal = document.getElementById("archive-modal");
