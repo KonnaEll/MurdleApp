@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Viewport config: prevents accidental zooming on inputs, handles iPhone notch -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <title>Daily Habit Tracker</title>
+  
+  <!-- iOS Standalone Web App Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Habits">
+  <meta name="theme-color" content="#0F172A">
+  
+  <!-- Apple Touch Icon (Generated dynamically via inline SVG) -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%230F172A'><rect width='100' height='100' rx='22' fill='%230F172A'/><circle cx='50' cy='50' r='32' fill='%2338BDF8'/><path d='M38 50 L46 58 L62 42' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+
+  <style>
+    :root {
+      --bg: #0F172A;
+      --card-bg: #1E293B;
+      --text: #F8FAFC;
+      --text-muted: #94A3B8;
+      --accent: #38BDF8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --success: #34D399;
+      --danger: #F87171;
+      --border: rgba(255, 255, 255, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      /* Handles iPhone Dynamic Island, top notch, and bottom home bar */
+      padding-top: max(env(safe-area-inset-top), 24px);
+      padding-bottom: max(env(safe-area-inset-bottom), 24px);
+      padding-left: 16px;
+      padding-right: 16px;
+      overflow-x: hidden;
+    }
+
+    header {
+      margin-top: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-text h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .header-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Progress Banner */
+    .progress-banner {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .progress-info {
+      flex: 1;
+    }
+
+    .progress-info h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .progress-info p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .progress-bar-bg {
+      height: 6px;
+      width: 90%;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 99px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 99px;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .progress-pct {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* Habit List */
+    .habit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      padding-bottom: 80px;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
+      margin-top: 48px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .habit-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: transform 0.15s ease, opacity 0.2s ease;
+    }
+
+    .habit-card:active {
+      transform: scale(0.98);
+    }
+
+    .habit-card.done {
+      border-color: rgba(52, 211, 153, 0.25);
+    }
+
+    .habit-card.done .habit-name {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    /* Custom Checkbox */
+    .checkbox-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .habit-card.done .checkbox-btn {
+      background: var(--success);
+      border-color: var(--success);
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.35);
+    }
+
+    .checkbox-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: white;
+      stroke-width: 3;
+      fill: none;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s ease;
+    }
+
+    .habit-card.done .checkbox-btn svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .habit-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .habit-name {
+      font-size: 1rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.2s ease;
+    }
+
+    .habit-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .streak-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .delete-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+
+    .delete-btn:active {
+      color: var(--danger);
+    }
+
+    /* Fixed Input Dock at Bottom */
+    .input-dock {
+      position: fixed;
+      bottom: max(env(safe-area-inset-bottom), 16px);
+      left: 16px;
+      right: 16px;
+      display: flex;
+      gap: 10px;
+      background: rgba(30, 41, 59, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 8px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .input-dock input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 0.95rem;
+      padding: 10px 16px;
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .input-dock input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .add-btn {
+      background: var(--accent);
+      color: #0F172A;
+      font-weight: 700;
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .add-btn:active {
+      transform: scale(0.95);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-text">
+      <h1 id="greeting">Today</h1>
+      <p id="current-date">Loading date...</p>
+    </div>
+  </header>
+
+  <div class="progress-banner">
+    <div class="progress-info">
+      <h2>Daily Progress</h2>
+      <p id="progress-sub">0 of 0 completed</p>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-bar"></div>
+      </div>
+    </div>
+    <div class="progress-pct" id="progress-text">0%</div>
+  </div>
+
+  <main class="habit-list" id="habit-list">
+    <!-- Habit items will render here dynamically -->
+  </main>
+
+  <div class="input-dock">
+    <input type="text" id="habit-input" placeholder="New habit (e.g., Read 15 mins)..." maxlength="50" autocomplete="off">
+    <button class="add-btn" id="add-btn" aria-label="Add Habit">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    // Storage Key
+    const STORAGE_KEY = 'iphone_daily_habits_v1';
+    const LAST_DATE_KEY = 'iphone_habits_last_date';
+
+    // State
+    let habits = [];
+
+    // Elements
+    const habitListEl = document.getElementById('habit-list');
+    const habitInputEl = document.getElementById('habit-input');
+    const addBtnEl = document.getElementById('add-btn');
+    const progressBarEl = document.getElementById('progress-bar');
+    const progressTextEl = document.getElementById('progress-text');
+    const progressSubEl = document.getElementById('progress-sub');
+    const currentDateEl = document.getElementById('current-date');
+
+    // Date formatting
+    function updateDateDisplay() {
+      const now = new Date();
+      const options = { weekday: 'long', month: 'short', day: 'numeric' };
+      currentDateEl.textContent = now.toLocaleDateString(undefined, options);
+    }
+
+    function getTodayString() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+
+    // Check if a new day has arrived to reset daily checks
+    function handleDayTransition() {
+      const today = getTodayString();
+      const lastOpened = localStorage.getItem(LAST_DATE_KEY);
+
+      if (lastOpened && lastOpened !== today) {
+        // Calculate difference in calendar days
+        const lastDate = new Date(lastOpened);
+        const currDate = new Date(today);
+        const diffTime = Math.abs(currDate - lastDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        habits.forEach(habit => {
+          if (!habit.completed) {
+            // Missed yesterday -> streak resets
+            habit.streak = 0;
+          }
+          // Uncheck for the new day
+          habit.completed = false;
+        });
+
+        localStorage.setItem(LAST_DATE_KEY, today);
+        saveHabits();
+      } else if (!lastOpened) {
+        localStorage.setItem(LAST_DATE_KEY, today);
+      }
+    }
+
+    function loadHabits() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        habits = stored ? JSON.parse(stored) : [
+          { id: 1, name: 'Drink 2L Water', completed: false, streak: 3 },
+          { id: 2, name: 'Read 15 mins', completed: false, streak: 7 },
+          { id: 3, name: 'Morning stretch', completed: false, streak: 1 }
+        ];
+      } catch (e) {
+        habits = [];
+      }
+    }
+
+    function saveHabits() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(habits));
+      render();
+    }
+
+    function addHabit() {
+      const name = habitInputEl.value.trim();
+      if (!name) return;
+
+      const newHabit = {
+        id: Date.now(),
+        name: name,
+        completed: false,
+        streak: 0
+      };
+
+      habits.unshift(newHabit);
+      habitInputEl.value = '';
+      saveHabits();
+    }
+
+    function toggleHabit(id) {
+      const habit = habits.find(h => h.id === id);
+      if (!habit) return;
+
+      habit.completed = !habit.completed;
+      if (habit.completed) {
+        habit.streak += 1;
+      } else {
+        habit.streak = Math.max(0, habit.streak - 1);
+      }
+
+      saveHabits();
+    }
+
+    function deleteHabit(id, event) {
+      event.stopPropagation();
+      habits = habits.filter(h => h.id !== id);
+      saveHabits();
+    }
+
+    function render() {
+      // Render Progress
+      const total = habits.length;
+      const completedCount = habits.filter(h => h.completed).length;
+      const pct = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+
+      progressBarEl.style.width = `${pct}%`;
+      progressTextEl.textContent = `${pct}%`;
+      progressSubEl.textContent = `${completedCount} of ${total} completed`;
+
+      // Render List
+      if (total === 0) {
+        habitListEl.innerHTML = `
+          <div class="empty-state">
+            <p>No habits tracked yet.</p>
+            <p style="font-size: 0.8rem; margin-top: 4px;">Use the input bar below to create one.</p>
+          </div>
+        `;
+        return;
+      }
+
+      habitListEl.innerHTML = habits.map(habit => `
+        <div class="habit-card ${habit.completed ? 'done' : ''}" onclick="toggleHabit(${habit.id})">
+          <div class="checkbox-btn">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <div class="habit-content">
+            <div class="habit-name">${escapeHtml(habit.name)}</div>
+            <div class="habit-meta">
+              <span class="streak-badge">🔥 ${habit.streak} day streak</span>
+            </div>
+          </div>
+          <button class="delete-btn" onclick="deleteHabit(${habit.id}, event)" aria-label="Delete">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Event Listeners
+    addBtnEl.addEventListener('click', addHabit);
+    habitInputEl.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addHabit();
+    });
+
+    // Init
+    updateDateDisplay();
+    loadHabits();
+    handleDayTransition();
+    render();
+  </script>
+</body>
+</html>
