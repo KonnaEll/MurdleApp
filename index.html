@@ -77,14 +77,14 @@
 
     .header-btns {
       display: flex;
-      gap: 6px;
+      gap: 5px;
     }
 
     .top-btn {
       background: var(--card-alt);
       border: 1px solid rgba(255, 255, 255, 0.15);
       color: var(--ink);
-      padding: 6px 10px;
+      padding: 6px 9px;
       border-radius: 99px;
       font-size: 0.72rem;
       font-weight: 600;
@@ -364,7 +364,7 @@
     .drawer-body {
       background: var(--card);
       width: 100%;
-      max-height: 82vh;
+      max-height: 85vh;
       border-top-left-radius: 18px;
       border-top-right-radius: 18px;
       border-top: 1px solid var(--gold);
@@ -451,6 +451,41 @@
       font-size: 0.85rem;
       color: #bbf7d0;
       line-height: 1.4;
+    }
+
+    /* Guide / Tutorial Styles */
+    .guide-section {
+      margin-bottom: 18px;
+    }
+
+    .guide-section h4 {
+      color: var(--gold);
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .guide-section p, .guide-section li {
+      font-size: 0.8rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+
+    .guide-section ul {
+      padding-left: 18px;
+      margin-top: 6px;
+    }
+
+    .guide-callout {
+      background: var(--card-alt);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 8px;
     }
 
     /* Pop-up for Innocent / Incorrect Accusation */
@@ -607,6 +642,7 @@
       <div class="brand-sub">The Logic Mystery Grid</div>
     </div>
     <div class="header-btns">
+      <button class="top-btn" id="open-guide-btn">📖 Guide</button>
       <button class="top-btn" id="open-hint-btn">💡 Hint</button>
       <button class="top-btn" id="open-solve-btn">🔍 Solve</button>
       <button class="top-btn" id="open-archive-btn">📁 Cases</button>
@@ -688,6 +724,79 @@
         <button class="close-drawer" id="close-solve">&times;</button>
       </div>
       <div id="solve-steps-container"></div>
+    </div>
+  </div>
+
+  <!-- Official How to Play Guide Drawer -->
+  <div class="drawer-overlay" id="guide-modal">
+    <div class="drawer-body">
+      <div class="drawer-title-row">
+        <div class="drawer-title">📖 Detective Field Manual: How to Play</div>
+        <button class="close-drawer" id="close-guide">&times;</button>
+      </div>
+
+      <div class="guide-section">
+        <h4>🎯 The Objective</h4>
+        <p>A crime has occurred. Every mystery involves exactly <strong>3 Suspects</strong>, <strong>3 Weapons</strong>, and <strong>3 Locations</strong>. Exactly one suspect held one weapon in one location to commit the murder. Your job is to correlate all clues using the L-grid and deduce the true <strong>Murderer</strong>, <strong>Weapon</strong>, and <strong>Crime Scene</strong>.</p>
+      </div>
+
+      <div class="guide-section">
+        <h4>📋 How the L-Shaped Grid Works</h4>
+        <p>The grid allows you to cross-examine evidence across three distinct sub-sections:</p>
+        <ul>
+          <li><strong>Top-Left Box:</strong> Links <strong>Weapons</strong> (rows) with <strong>Suspects</strong> (columns).</li>
+          <li><strong>Top-Right Box:</strong> Links <strong>Weapons</strong> (rows) with <strong>Locations</strong> (columns).</li>
+          <li><strong>Bottom-Left Box:</strong> Links <strong>Locations</strong> (rows) with <strong>Suspects</strong> (columns).</li>
+        </ul>
+      </div>
+
+      <div class="guide-section">
+        <h4>👆 Tapping the Grid Cells</h4>
+        <p>Tap any cell in the table to cycle through three states:</p>
+        <div class="guide-callout">
+          <p>• <strong>[Blank] (Empty):</strong> Information unknown.</p>
+          <p>• <strong style="color:#f87171;">[✕] (Ruled Out):</strong> This suspect, item, or place is proven NOT linked.</p>
+          <p>• <strong style="color:#4ade80;">[✓] (Confirmed):</strong> This link is definitely true.</p>
+        </div>
+        <p style="margin-top:6px; font-size: 0.74rem; color: var(--gold);"><strong>Golden Rule of Elimination:</strong> When you place a <strong>✓</strong>, you can immediately place <strong>✕</strong> marks across the rest of that specific item's row and column in that sub-box!</p>
+      </div>
+
+      <div class="guide-section">
+        <h4>🕵️‍♂️ Step-by-Step Walkthrough Example</h4>
+        <p>Let's follow <strong>Case 1 (The Observatory Blackout)</strong> from start to finish:</p>
+        
+        <div class="walkthrough-step" style="margin-top:8px;">
+          <strong>Step 1: Direct Placements</strong>
+          <p><strong>Clue 1:</strong> <em>"Dr. Violet (🟣) was at the Radio Dish (📡) wearing the Heavy Goggles (🥽)."</em><br>
+          → Find Dr. Violet in the bottom-left grid and put a <strong>✓</strong> at Radio Dish. Fill the rest of Dr. Violet's column with <strong>✕</strong>.<br>
+          → In the top-left grid, put a <strong>✓</strong> linking Goggles to Dr. Violet.</p>
+        </div>
+
+        <div class="walkthrough-step">
+          <strong>Step 2: Elimination of Places</strong>
+          <p><strong>Clue 2:</strong> <em>"Dean Cobalt (🔵) worked inside the Lab Center (🏢)."</em><br>
+          → Put a <strong>✓</strong> at Dean Cobalt & Lab Center.<br>
+          → Now look at the bottom-left grid: Radio Dish is taken by Violet, Lab Center by Cobalt. By pure elimination, <strong>Judge Amber (🟠) must have been at Archive A (🅰️)</strong>! Place a <strong>✓</strong> there.</p>
+        </div>
+
+        <div class="walkthrough-step">
+          <strong>Step 3: Tracking Items & Crime Scenes</strong>
+          <p><strong>Clue 3:</strong> <em>"Coiled Wire (➰) was in Lab Center (🏢)."</em><br>
+          → Since Cobalt was in the Lab Center, Cobalt held the Wire.<br>
+          → <strong>Clue 4:</strong> <em>"Ingested lethal Neurotoxin (🧠) in Archive A (🅰️)."</em><br>
+          → The fatal weapon is Neurotoxin, and the Crime Scene is Archive A.<br>
+          → In Step 2, you proved Judge Amber was the only person at Archive A! Therefore, Judge Amber held the Neurotoxin.</p>
+        </div>
+
+        <div class="walkthrough-step">
+          <strong>Step 4: Formal Indictment</strong>
+          <p>Scroll down to the accusation form, choose:<br>
+          • <strong>Murderer:</strong> Judge Amber (🟠)<br>
+          • <strong>Weapon:</strong> Neurotoxin (🧠)<br>
+          • <strong>Crime Scene:</strong> Archive A (🅰️)<br>
+          Tap <strong>Accuse & Solve Case</strong> to close the case!</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1791,7 +1900,7 @@
     /* =========================================================================
        STATE MANAGEMENT & ENGINE
        ========================================================================= */
-    const STORAGE_KEY = "Murdle_lgrid_30_cases_v2";
+    const STORAGE_KEY = "Murdle_lgrid_30_cases_v3";
     let state = {
       caseIndex: 0,
       completed: [],
@@ -2059,6 +2168,7 @@
     const archiveModal = document.getElementById("archive-modal");
     const hintModal = document.getElementById("hint-modal");
     const solveModal = document.getElementById("solve-modal");
+    const guideModal = document.getElementById("guide-modal");
 
     document.getElementById("open-archive-btn").addEventListener("click", () => archiveModal.classList.add("active"));
     document.getElementById("close-archive").addEventListener("click", () => archiveModal.classList.remove("active"));
@@ -2066,8 +2176,10 @@
     document.getElementById("close-hint").addEventListener("click", () => hintModal.classList.remove("active"));
     document.getElementById("open-solve-btn").addEventListener("click", () => solveModal.classList.add("active"));
     document.getElementById("close-solve").addEventListener("click", () => solveModal.classList.remove("active"));
+    document.getElementById("open-guide-btn").addEventListener("click", () => guideModal.classList.add("active"));
+    document.getElementById("close-guide").addEventListener("click", () => guideModal.classList.remove("active"));
 
-    [archiveModal, hintModal, solveModal].forEach(m => {
+    [archiveModal, hintModal, solveModal, guideModal].forEach(m => {
       m.addEventListener("click", (e) => {
         if (e.target === m) m.classList.remove("active");
       });
