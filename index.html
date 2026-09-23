@@ -2,31 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Viewport config: prevents accidental zooming on inputs, handles iPhone notch -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  
-  <title>Daily Habit Tracker</title>
-  
-  <!-- iOS Standalone Web App Meta Tags -->
+  <title>Murdoku - Mystery Logic</title>
+
+  <!-- iOS PWA Fullscreen Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Habits">
-  <meta name="theme-color" content="#0F172A">
-  
-  <!-- Apple Touch Icon (Generated dynamically via inline SVG) -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%230F172A'><rect width='100' height='100' rx='22' fill='%230F172A'/><circle cx='50' cy='50' r='32' fill='%2338BDF8'/><path d='M38 50 L46 58 L62 42' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+  <meta name="apple-mobile-web-app-title" content="Murdoku">
+  <meta name="theme-color" content="#0d090a">
+
+  <!-- Dynamic Detective Badge App Icon -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%230d090a'><rect width='100' height='100' rx='22' fill='%23171012'/><circle cx='50' cy='50' r='30' fill='%23b91c1c'/><path d='M35 50 L45 60 L65 40' fill='none' stroke='%23fef2f2' stroke-width='6' stroke-linecap='round'/><circle cx='50' cy='50' r='38' fill='none' stroke='%23d97706' stroke-width='2' stroke-dasharray='4 2'/></svg>">
 
   <style>
     :root {
-      --bg: #0F172A;
-      --card-bg: #1E293B;
-      --text: #F8FAFC;
-      --text-muted: #94A3B8;
-      --accent: #38BDF8;
-      --accent-glow: rgba(56, 189, 248, 0.25);
-      --success: #34D399;
-      --danger: #F87171;
-      --border: rgba(255, 255, 255, 0.08);
+      --bg: #0d090a;
+      --card-bg: #181214;
+      --card-inner: #221a1d;
+      --accent-blood: #dc2626;
+      --accent-gold: #d97706;
+      --text: #f5f5f4;
+      --text-muted: #a8a29e;
+      --border: rgba(255, 255, 255, 0.1);
+      --cleared: #475569;
+      --confirmed: #16a34a;
+      --danger: #ef4444;
     }
 
     * {
@@ -39,471 +39,913 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top, #26171b 0%, var(--bg) 80%);
       color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      /* Handles iPhone Dynamic Island, top notch, and bottom home bar */
-      padding-top: max(env(safe-area-inset-top), 24px);
+      padding-top: max(env(safe-area-inset-top), 20px);
       padding-bottom: max(env(safe-area-inset-bottom), 24px);
       padding-left: 16px;
       padding-right: 16px;
       overflow-x: hidden;
     }
 
+    /* Top Header */
     header {
-      margin-top: 12px;
-      margin-bottom: 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
     }
 
-    .header-text h1 {
-      font-size: 1.75rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .header-text p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    /* Progress Banner */
-    .progress-banner {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 16px 20px;
+    .brand {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      align-items: baseline;
+      gap: 6px;
     }
 
-    .progress-info {
-      flex: 1;
+    .brand h1 {
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      color: var(--accent-blood);
+      text-transform: uppercase;
+      font-weight: 900;
     }
 
-    .progress-info h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-
-    .progress-info p {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .progress-bar-bg {
-      height: 6px;
-      width: 90%;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 99px;
-      margin-top: 10px;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--accent);
-      border-radius: 99px;
-      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .progress-pct {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    /* Habit List */
-    .habit-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      flex: 1;
-      padding-bottom: 80px;
-    }
-
-    .empty-state {
-      text-align: center;
-      color: var(--text-muted);
-      margin-top: 48px;
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-
-    .habit-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      transition: transform 0.15s ease, opacity 0.2s ease;
-    }
-
-    .habit-card:active {
-      transform: scale(0.98);
-    }
-
-    .habit-card.done {
-      border-color: rgba(52, 211, 153, 0.25);
-    }
-
-    .habit-card.done .habit-name {
-      text-decoration: line-through;
-      color: var(--text-muted);
-    }
-
-    /* Custom Checkbox */
-    .checkbox-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      background: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .habit-card.done .checkbox-btn {
-      background: var(--success);
-      border-color: var(--success);
-      box-shadow: 0 0 12px rgba(52, 211, 153, 0.35);
-    }
-
-    .checkbox-btn svg {
-      width: 16px;
-      height: 16px;
-      stroke: white;
-      stroke-width: 3;
-      fill: none;
-      opacity: 0;
-      transform: scale(0.5);
-      transition: all 0.2s ease;
-    }
-
-    .habit-card.done .checkbox-btn svg {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .habit-content {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .habit-name {
-      font-size: 1rem;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: color 0.2s ease;
-    }
-
-    .habit-meta {
+    .brand span {
       font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 4px;
+      color: var(--accent-gold);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .level-select-btn {
+      background: var(--card-inner);
+      border: 1px solid var(--accent-gold);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 600;
       display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    /* Case Dossier Card */
+    .dossier-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent-blood);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .case-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: rgba(220, 38, 38, 0.2);
+      color: #fca5a5;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .case-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .case-story {
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--text-muted);
+    }
+
+    /* Clues Accordion / Section */
+    .section-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .clues-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+
+    .clue-item {
+      font-size: 0.82rem;
+      color: #e7e5e4;
+      line-height: 1.4;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: flex-start;
       gap: 8px;
     }
 
-    .streak-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
+    .clue-item:last-child {
+      border-bottom: none;
     }
 
-    .delete-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
+    .clue-bullet {
+      color: var(--accent-blood);
+      font-weight: bold;
     }
 
-    .delete-btn:active {
-      color: var(--danger);
-    }
-
-    /* Fixed Input Dock at Bottom */
-    .input-dock {
-      position: fixed;
-      bottom: max(env(safe-area-inset-bottom), 16px);
-      left: 16px;
-      right: 16px;
-      display: flex;
-      gap: 10px;
-      background: rgba(30, 41, 59, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 8px;
-      border-radius: 99px;
+    /* Interactive Deduction Grid */
+    .grid-container {
+      background: var(--card-bg);
       border: 1px solid var(--border);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 16px;
+      overflow-x: auto;
     }
 
-    .input-dock input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-size: 0.95rem;
-      padding: 10px 16px;
-      outline: none;
-      user-select: text;
-      -webkit-user-select: text;
+    .deduction-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
     }
 
-    .input-dock input::placeholder {
+    .deduction-table th {
+      font-size: 0.7rem;
+      padding: 6px 4px;
+      color: var(--accent-gold);
+      font-weight: 600;
+      text-align: center;
+      word-wrap: break-word;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .deduction-table td {
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      text-align: center;
+      vertical-align: middle;
+      padding: 3px;
+    }
+
+    .row-header {
+      font-size: 0.72rem;
       color: var(--text-muted);
+      text-align: left !important;
+      font-weight: 600;
+      padding-left: 6px !important;
+      width: 85px;
+      background: rgba(0, 0, 0, 0.2);
     }
 
-    .add-btn {
-      background: var(--accent);
-      color: #0F172A;
-      font-weight: 700;
-      border: none;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
+    .grid-cell {
+      height: 38px;
+      background: var(--card-inner);
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-weight: 800;
+      font-size: 1.05rem;
       cursor: pointer;
-      flex-shrink: 0;
-      box-shadow: 0 0 12px var(--accent-glow);
+      transition: background 0.15s ease, transform 0.1s ease;
     }
 
-    .add-btn:active {
-      transform: scale(0.95);
+    .grid-cell:active {
+      transform: scale(0.92);
+    }
+
+    .cell-neutral {
+      color: transparent;
+    }
+
+    .cell-cross {
+      color: var(--danger);
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .cell-match {
+      color: #4ade80;
+      background: rgba(34, 197, 94, 0.2);
+      box-shadow: inset 0 0 8px rgba(34, 197, 94, 0.3);
+    }
+
+    .grid-legend {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Accusation / Solution Panel */
+    .accuse-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 80px;
+    }
+
+    .verdict-selects {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .select-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .select-wrap label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    select {
+      background: var(--card-inner);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .solve-btn {
+      width: 100%;
+      background: var(--accent-blood);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.35);
+    }
+
+    .solve-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Level Selector Drawer Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: flex-end;
+      z-index: 100;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      width: 100%;
+      max-height: 80vh;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      border-top: 1px solid var(--accent-gold);
+      padding: 20px 16px calc(max(env(safe-area-inset-bottom), 16px) + 20px);
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.15rem;
+      color: var(--accent-gold);
+    }
+
+    .close-modal {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .level-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .level-item {
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .level-item.completed {
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    .level-item.active-level {
+      border-color: var(--accent-blood);
+      background: rgba(220, 38, 38, 0.1);
+    }
+
+    .level-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .level-diff {
+      font-size: 0.7rem;
+      color: var(--accent-gold);
+      margin-top: 2px;
+    }
+
+    /* Modal Outcome Toast */
+    .verdict-toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: #181214;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      width: 85%;
+      max-width: 320px;
+      text-align: center;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    }
+
+    .verdict-toast.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .toast-icon {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    .toast-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .toast-msg {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 18px;
+    }
+
+    .toast-btn {
+      width: 100%;
+      background: var(--accent-blood);
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
+  <!-- Top Navigation & Level Selector -->
   <header>
-    <div class="header-text">
-      <h1 id="greeting">Today</h1>
-      <p id="current-date">Loading date...</p>
+    <div class="brand">
+      <h1>Murdoku</h1>
+      <span>Deduction</span>
     </div>
+    <button class="level-select-btn" id="open-level-modal">
+      <span id="header-level-text">Case 1/10</span>
+      <span>▼</span>
+    </button>
   </header>
 
-  <div class="progress-banner">
-    <div class="progress-info">
-      <h2>Daily Progress</h2>
-      <p id="progress-sub">0 of 0 completed</p>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="progress-bar"></div>
-      </div>
-    </div>
-    <div class="progress-pct" id="progress-text">0%</div>
+  <!-- Case Story Details -->
+  <div class="dossier-card">
+    <div class="case-badge" id="case-difficulty">Difficulty: Novice</div>
+    <h2 class="case-title" id="case-title">The Parlor Poisoning</h2>
+    <p class="case-story" id="case-story">Lord Harrington has been found slain. Reconstruct the crime scene and identify the killer.</p>
   </div>
 
-  <main class="habit-list" id="habit-list">
-    <!-- Habit items will render here dynamically -->
-  </main>
+  <!-- Clues List -->
+  <div class="section-title">
+    <span>🕵️‍♂️ Verified Clues & Alibis</span>
+  </div>
+  <div class="clues-box" id="clues-container">
+    <!-- Generated dynamically -->
+  </div>
 
-  <div class="input-dock">
-    <input type="text" id="habit-input" placeholder="New habit (e.g., Read 15 mins)..." maxlength="50" autocomplete="off">
-    <button class="add-btn" id="add-btn" aria-label="Add Habit">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-    </button>
+  <!-- Deduction Grid -->
+  <div class="section-title">
+    <span>📋 Detective Scratchpad</span>
+  </div>
+  <div class="grid-container">
+    <table class="deduction-table" id="deduction-grid">
+      <!-- Grid drawn dynamically -->
+    </table>
+    <div class="grid-legend">
+      <div class="legend-item"><span style="color:var(--text-muted)">Blank:</span> Unknown</div>
+      <div class="legend-item"><span style="color:var(--danger); font-weight:bold;">✕:</span> Alibi / Excluded</div>
+      <div class="legend-item"><span style="color:#4ade80; font-weight:bold;">✓:</span> Linked / Guilty</div>
+    </div>
+  </div>
+
+  <!-- Accusation Form -->
+  <div class="accuse-panel">
+    <div class="section-title">
+      <span>⚖️ Formal Accusation</span>
+    </div>
+    <div class="verdict-selects">
+      <div class="select-wrap">
+        <label>The Murderer</label>
+        <select id="select-killer"></select>
+      </div>
+      <div class="select-wrap">
+        <label>Murder Weapon</label>
+        <select id="select-weapon"></select>
+      </div>
+      <div class="select-wrap">
+        <label>Crime Scene</label>
+        <select id="select-room"></select>
+      </div>
+    </div>
+    <button class="solve-btn" id="submit-verdict">Close the Case</button>
+  </div>
+
+  <!-- Level Selection Drawer Modal -->
+  <div class="modal-overlay" id="level-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Case Archives</h2>
+        <button class="close-modal" id="close-modal">&times;</button>
+      </div>
+      <div class="level-list" id="level-list">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Result Dialog Toast -->
+  <div class="verdict-toast" id="verdict-toast">
+    <div class="toast-icon" id="toast-icon">🔍</div>
+    <div class="toast-title" id="toast-title">Verdict</div>
+    <div class="toast-msg" id="toast-msg">Case details message.</div>
+    <button class="toast-btn" id="toast-btn">Continue</button>
   </div>
 
   <script>
-    // Storage Key
-    const STORAGE_KEY = 'iphone_daily_habits_v1';
-    const LAST_DATE_KEY = 'iphone_habits_last_date';
-
-    // State
-    let habits = [];
-
-    // Elements
-    const habitListEl = document.getElementById('habit-list');
-    const habitInputEl = document.getElementById('habit-input');
-    const addBtnEl = document.getElementById('add-btn');
-    const progressBarEl = document.getElementById('progress-bar');
-    const progressTextEl = document.getElementById('progress-text');
-    const progressSubEl = document.getElementById('progress-sub');
-    const currentDateEl = document.getElementById('current-date');
-
-    // Date formatting
-    function updateDateDisplay() {
-      const now = new Date();
-      const options = { weekday: 'long', month: 'short', day: 'numeric' };
-      currentDateEl.textContent = now.toLocaleDateString(undefined, options);
-    }
-
-    function getTodayString() {
-      const now = new Date();
-      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    }
-
-    // Check if a new day has arrived to reset daily checks
-    function handleDayTransition() {
-      const today = getTodayString();
-      const lastOpened = localStorage.getItem(LAST_DATE_KEY);
-
-      if (lastOpened && lastOpened !== today) {
-        // Calculate difference in calendar days
-        const lastDate = new Date(lastOpened);
-        const currDate = new Date(today);
-        const diffTime = Math.abs(currDate - lastDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        habits.forEach(habit => {
-          if (!habit.completed) {
-            // Missed yesterday -> streak resets
-            habit.streak = 0;
-          }
-          // Uncheck for the new day
-          habit.completed = false;
-        });
-
-        localStorage.setItem(LAST_DATE_KEY, today);
-        saveHabits();
-      } else if (!lastOpened) {
-        localStorage.setItem(LAST_DATE_KEY, today);
+    /* ========================================================
+       10 CURATED CASES (Ascending Difficulty & Scale)
+       Grid Types: 3x3 (Intro) -> 4x4 (Advanced Multi-variable)
+       ======================================================== */
+    const CASES = [
+      {
+        id: 1,
+        title: "The Manor Tea Time",
+        difficulty: "Novice",
+        story: "Lord Harrington slumped over his evening chamomile. One suspect poisoned the tea in a specific room.",
+        suspects: ["Butler", "Maid", "Nephew"],
+        weapons: ["Poison", "Dagger", "Pistol"],
+        rooms: ["Study", "Kitchen", "Parlor"],
+        clues: [
+          "The Butler was cleaning dishes in the Kitchen all night.",
+          "The Dagger was safely locked in the Study display cabinet.",
+          "The Nephew had an alibi in the Parlor playing piano.",
+          "The victim had no knife or bullet wounds; he ingested something fatal."
+        ],
+        solution: { killer: "Maid", weapon: "Poison", room: "Study" }
+      },
+      {
+        id: 2,
+        title: "Midnight in the Gallery",
+        difficulty: "Novice",
+        story: "An art patron was struck down before the midnight auction. Three collectors had exclusive keys.",
+        suspects: ["Countess", "Doctor", "Painter"],
+        weapons: ["Bronze Bust", "Fountain Pen", "Chandelier Cord"],
+        rooms: ["Vault", "Gallery", "Lobby"],
+        clues: [
+          "The Doctor was attending a guest who fainted in the Lobby.",
+          "The Bronze Bust was undisturbed on the pedestal in the Vault.",
+          "The Chandelier Cord was uncoiled in the Gallery where broken frames were found.",
+          "The Painter was proven to be locked in the Vault examining canvases."
+        ],
+        solution: { killer: "Countess", weapon: "Chandelier Cord", room: "Gallery" }
+      },
+      {
+        id: 3,
+        title: "The Cellar Conspiracy",
+        difficulty: "Easy",
+        story: "A vintage cask hid a dark secret. An estate guest orchestrated a lethal trap downstairs.",
+        suspects: ["Sommelier", "Professor", "Heiress"],
+        weapons: ["Corkscrew", "Lead Pipe", "Arsenic"],
+        rooms: ["Cellar", "Billiard Room", "Trophy Hall"],
+        clues: [
+          "Forensics revealed blunt force trauma; neither toxins nor piercing wounds were found.",
+          "The Heiress was shooting pool in the Billiard Room with two eyewitnesses.",
+          "The Sommelier was discovered unconscious in the Trophy Hall.",
+          "The Lead Pipe was pulled straight out of the Cellar's drainage canal."
+        ],
+        solution: { killer: "Professor", weapon: "Lead Pipe", room: "Cellar" }
+      },
+      {
+        id: 4,
+        title: "Shadows in the Conservatory",
+        difficulty: "Easy",
+        story: "Rain lashed against the glass greenhouse as screams echoed through the gardens.",
+        suspects: ["Botanist", "Chauffeur", "Colonel"],
+        weapons: ["Pruning Shears", "Revolver", "Strychnine"],
+        rooms: ["Greenhouse", "Garage", "Terrace"],
+        clues: [
+          "The Chauffeur was repairing tire treads in the Garage during the entire downpour.",
+          "No gunshots were reported by anyone inside or outside the mansion.",
+          "The Colonel was seen smoking a cigar on the covered Terrace.",
+          "Cuttings of rare orchids were found entangled with the bloody Pruning Shears."
+        ],
+        solution: { killer: "Botanist", weapon: "Pruning Shears", room: "Greenhouse" }
+      },
+      {
+        id: 5,
+        title: "The Express Compartment",
+        difficulty: "Medium",
+        story: "As the alpine express crossed into the tunnel, the lights flickered and a diplomat fell silent.",
+        suspects: ["Conductor", "Baroness", "Spy"],
+        weapons: ["Garrote Wire", "Pocket Knife", "Soporific"],
+        rooms: ["Cabin A", "Dining Car", "Luggage Van"],
+        clues: [
+          "The Dining Car was packed with passengers; nobody died there.",
+          "The Conductor stamped tickets in Cabin A alongside multiple witnesses.",
+          "The victim was found strangled in the dark; sharp blades were ruled out.",
+          "The Baroness never set foot inside the Luggage Van."
+        ],
+        solution: { killer: "Spy", weapon: "Garrote Wire", room: "Luggage Van" }
+      },
+      {
+        id: 6,
+        title: "The Grand Library Enigma",
+        difficulty: "Medium (4 Variables)",
+        story: "The head archivist was pinned beneath fallen shelves. 4 scholars were conducting late-night research.",
+        suspects: ["Dean", "Librarian", "Historian", "Student"],
+        weapons: ["Heavy Tome", "Letter Opener", "Cyanide", "Brass Lamp"],
+        rooms: ["Archives", "Reading Hall", "Tower", "Office"],
+        clues: [
+          "The Student was seen writing in the Reading Hall until dawn.",
+          "The Dean was giving a private conference in the high Tower.",
+          "The Brass Lamp and Letter Opener were inspected and cleared of fingerprints.",
+          "Cyanide residues were discovered inside an inkwell located in the Archives.",
+          "The Historian was confirmed to be working in the Office."
+        ],
+        solution: { killer: "Librarian", weapon: "Cyanide", room: "Archives" }
+      },
+      {
+        id: 7,
+        title: "The Black Harbor Wharf",
+        difficulty: "Challenging",
+        story: "A cargo manifest was stolen and the harbor master silenced right as the fog rolled over the dock.",
+        suspects: ["Captain", "Smuggler", "Deckhand", "Merchant"],
+        weapons: ["Harpoon", "Flare Gun", "Anchor Rope", "Club"],
+        rooms: ["Pier 9", "Warehouse", "Crow's Nest", "Customs House"],
+        clues: [
+          "The Merchant was negotiating cargo tariffs in the Customs House.",
+          "The Anchor Rope was knotted in Pier 9 where struggle marks were washed by high tide.",
+          "The Captain was sighted high in the Crow's Nest logging wind speeds.",
+          "The Deckhand has an alibi loading crates into the Warehouse.",
+          "The victim had rope burns; neither gun powder nor piercing weapons were used."
+        ],
+        solution: { killer: "Smuggler", weapon: "Anchor Rope", room: "Pier 9" }
+      },
+      {
+        id: 8,
+        title: "The Clockwork Workshop",
+        difficulty: "Challenging",
+        story: "Gears seized when a gearmaker was eliminated during the chimes of three.",
+        suspects: ["Apprentice", "Guildmaster", "Financier", "Rival"],
+        weapons: ["Ticking Bomb", "Heavy Wrench", "Glass Shard", "Spring Wire"],
+        rooms: ["Foundry", "Drafting Room", "Bell Tower", "Vault"],
+        clues: [
+          "The Financier was auditing ledgers locked inside the Vault.",
+          "The Guildmaster was seen calibrating pendulum arms in the Bell Tower.",
+          "The Heavy Wrench caused the fatal fracture; explosives and blades were intact.",
+          "The Apprentice was sweating near the smelter in the Foundry.",
+          "The murder happened in the Drafting Room where schematics were smeared."
+        ],
+        solution: { killer: "Rival", weapon: "Heavy Wrench", room: "Drafting Room" }
+      },
+      {
+        id: 9,
+        title: "The Opera Masquerade",
+        difficulty: "Expert",
+        story: "Behind silk masks, someone carried out a calculated vendetta behind the red velvet curtains.",
+        suspects: ["Tenor", "Prima Donna", "Director", "Stagehand"],
+        weapons: ["Rapier", "Poison Vial", "Sandbag Drop", "Silk Scarf"],
+        rooms: ["Backstage", "Dressing Room", "Orchestra Pit", "Fly Loft"],
+        clues: [
+          "The Prima Donna never left her Dressing Room while warming her vocals.",
+          "The Director was arguing with musicians down in the Orchestra Pit.",
+          "The fatal blow was delivered by an intentionally dropped Sandbag from high above.",
+          "The Stagehand claims he was in the Fly Loft, but the ropes were cut from Backstage.",
+          "The Tenor has no alibi for the Backstage rigging station where the release winch was found."
+        ],
+        solution: { killer: "Tenor", weapon: "Sandbag Drop", room: "Backstage" }
+      },
+      {
+        id: 10,
+        title: "The Crypt of the Alchemist",
+        difficulty: "Mastermind",
+        story: "The philosopher's secret brought death to the underground catacombs. Every clue must be correlated.",
+        suspects: ["Occultist", "Monk", "Graverobber", "Scholar"],
+        weapons: ["Ritual Athame", "Brimstone Gas", "Silver Candelabra", "Iron Chain"],
+        rooms: ["Altar", "Catacombs", "Scriptorium", "Embalming Chamber"],
+        clues: [
+          "The Scholar was transcribing ancient scrolls in the Scriptorium with the Monk.",
+          "The Monk never possessed weapons or left the scriptorium.",
+          "The victim succumbed to inhaled Brimstone Gas; wounds from chains and blades are nonexistent.",
+          "The Graverobber was caught excavating relics in the distant Catacombs.",
+          "The fatal vapors were vented directly into the Altar sanctum."
+        ],
+        solution: { killer: "Occultist", weapon: "Brimstone Gas", room: "Altar" }
       }
-    }
+    ];
 
-    function loadHabits() {
+    /* ========================================================
+       APPLICATION STATE & PERSISTENCE
+       ======================================================== */
+    const STORAGE_KEY = "murdoku_game_v1";
+    let state = {
+      currentLevelIndex: 0,
+      completedLevels: [],
+      // Cell state map: key `${levelId}_${row}_${col}` -> 0: empty, 1: cross, 2: match
+      scratchpad: {}
+    };
+
+    function loadState() {
       try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        habits = stored ? JSON.parse(stored) : [
-          { id: 1, name: 'Drink 2L Water', completed: false, streak: 3 },
-          { id: 2, name: 'Read 15 mins', completed: false, streak: 7 },
-          { id: 3, name: 'Morning stretch', completed: false, streak: 1 }
-        ];
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          state = Object.assign(state, JSON.parse(saved));
+        }
       } catch (e) {
-        habits = [];
+        console.error("Storage load error", e);
       }
     }
 
-    function saveHabits() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(habits));
-      render();
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
-    function addHabit() {
-      const name = habitInputEl.value.trim();
-      if (!name) return;
+    /* ========================================================
+       DOM ELEMENTS
+       ======================================================== */
+    const headerLevelText = document.getElementById("header-level-text");
+    const caseBadge = document.getElementById("case-difficulty");
+    const caseTitle = document.getElementById("case-title");
+    const caseStory = document.getElementById("case-story");
+    const cluesContainer = document.getElementById("clues-container");
+    const deductionGrid = document.getElementById("deduction-grid");
+    const selectKiller = document.getElementById("select-killer");
+    const selectWeapon = document.getElementById("select-weapon");
+    const selectRoom = document.getElementById("select-room");
+    const submitVerdictBtn = document.getElementById("submit-verdict");
+    const openLevelModalBtn = document.getElementById("open-level-modal");
+    const levelModal = document.getElementById("level-modal");
+    const closeModalBtn = document.getElementById("close-modal");
+    const levelList = document.getElementById("level-list");
+    const verdictToast = document.getElementById("verdict-toast");
+    const toastIcon = document.getElementById("toast-icon");
+    const toastTitle = document.getElementById("toast-title");
+    const toastMsg = document.getElementById("toast-msg");
+    const toastBtn = document.getElementById("toast-btn");
 
-      const newHabit = {
-        id: Date.now(),
-        name: name,
-        completed: false,
-        streak: 0
-      };
+    /* ========================================================
+       RENDER GAME ENGINE
+       ======================================================== */
+    function renderLevel() {
+      const c = CASES[state.currentLevelIndex];
+      headerLevelText.textContent = `Case ${c.id}/10`;
+      caseBadge.textContent = `Difficulty: ${c.difficulty}`;
+      caseTitle.textContent = `${c.id}. ${c.title}`;
+      caseStory.textContent = c.story;
 
-      habits.unshift(newHabit);
-      habitInputEl.value = '';
-      saveHabits();
+      // Clues
+      cluesContainer.innerHTML = c.clues.map(clue => `
+        <div class="clue-item">
+          <span class="clue-bullet">▸</span>
+          <span>${clue}</span>
+        </div>
+      `).join("");
+
+      // Select Dropdowns
+      populateSelect(selectKiller, c.suspects, "Select Suspect...");
+      populateSelect(selectWeapon, c.weapons, "Select Weapon...");
+      populateSelect(selectRoom, c.rooms, "Select Room...");
+
+      // Render Deduction Grid
+      renderGrid(c);
+      renderLevelList();
     }
 
-    function toggleHabit(id) {
-      const habit = habits.find(h => h.id === id);
-      if (!habit) return;
-
-      habit.completed = !habit.completed;
-      if (habit.completed) {
-        habit.streak += 1;
-      } else {
-        habit.streak = Math.max(0, habit.streak - 1);
-      }
-
-      saveHabits();
+    function populateSelect(selectEl, items, placeholder) {
+      selectEl.innerHTML = `<option value="">-- ${placeholder} --</option>` +
+        items.map(item => `<option value="${item}">${item}</option>`).join("");
     }
 
-    function deleteHabit(id, event) {
-      event.stopPropagation();
-      habits = habits.filter(h => h.id !== id);
-      saveHabits();
+    /* Draw deduction grid: Suspects on Rows, Weapons & Rooms on Columns */
+    function renderGrid(c) {
+      const colHeaders = [...c.weapons, ...c.rooms];
+      let html = `<thead><tr><th class="row-header">Suspects</th>`;
+      colHeaders.forEach(col => {
+        html += `<th>${col}</th>`;
+      });
+      html += `</tr></thead><tbody>`;
+
+      c.suspects.forEach((suspect, rIdx) => {
+        html += `<tr><td class="row-header">${suspect}</td>`;
+        colHeaders.forEach((col, cIdx) => {
+          const key = `${c.id}_${rIdx}_${cIdx}`;
+          const val = state.scratchpad[key] || 0;
+          let symbol = "";
+          let cls = "cell-neutral";
+          if (val === 1) {
+            symbol = "✕";
+            cls = "cell-cross";
+          } else if (val === 2) {
+            symbol = "✓";
+            cls = "cell-match";
+          }
+          html += `<td>
+            <div class="grid-cell ${cls}" onclick="cycleCell('${key}')">${symbol}</div>
+          </td>`;
+        });
+        html += `</tr>`;
+      });
+
+      html += `</tbody>`;
+      deductionGrid.innerHTML = html;
     }
 
-    function render() {
-      // Render Progress
-      const total = habits.length;
-      const completedCount = habits.filter(h => h.completed).length;
-      const pct = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+    /* Cycle cell: 0 (Blank) -> 1 (Alibi ✕) -> 2 (Confirmed ✓) -> 0 */
+    window.cycleCell = function(key) {
+      const current = state.scratchpad[key] || 0;
+      const next = (current + 1) % 3;
+      state.scratchpad[key] = next;
+      saveState();
+      renderGrid(CASES[state.currentLevelIndex]);
+    };
 
-      progressBarEl.style.width = `${pct}%`;
-      progressTextEl.textContent = `${pct}%`;
-      progressSubEl.textContent = `${completedCount} of ${total} completed`;
-
-      // Render List
-      if (total === 0) {
-        habitListEl.innerHTML = `
-          <div class="empty-state">
-            <p>No habits tracked yet.</p>
-            <p style="font-size: 0.8rem; margin-top: 4px;">Use the input bar below to create one.</p>
+    /* Render Level Drawer */
+    function renderLevelList() {
+      levelList.innerHTML = CASES.map((c, i) => {
+        const isDone = state.completedLevels.includes(c.id);
+        const isActive = i === state.currentLevelIndex;
+        return `
+          <div class="level-item ${isDone ? 'completed' : ''} ${isActive ? 'active-level' : ''}" onclick="selectCase(${i})">
+            <div>
+              <div class="level-name">${c.id}. ${c.title}</div>
+              <div class="level-diff">${c.difficulty} · ${c.suspects.length}x${c.weapons.length + c.rooms.length} Matrix</div>
+            </div>
+            <div>${isDone ? '🏆 Solved' : (isActive ? '▶ Current' : '🔒 Open')}</div>
           </div>
         `;
+      }).join("");
+    }
+
+    window.selectCase = function(index) {
+      state.currentLevelIndex = index;
+      saveState();
+      renderLevel();
+      levelModal.classList.remove("active");
+    };
+
+    /* ========================================================
+       ACCUSATION & SOLVE LOGIC
+       ======================================================== */
+    submitVerdictBtn.addEventListener("click", () => {
+      const c = CASES[state.currentLevelIndex];
+      const killer = selectKiller.value;
+      const weapon = selectWeapon.value;
+      const room = selectRoom.value;
+
+      if (!killer || !weapon || !room) {
+        showToast("⚠️ Missing Clues", "You must accuse a specific suspect with both weapon and location.", "Review Dossier");
         return;
       }
 
-      habitListEl.innerHTML = habits.map(habit => `
-        <div class="habit-card ${habit.completed ? 'done' : ''}" onclick="toggleHabit(${habit.id})">
-          <div class="checkbox-btn">
-            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-          <div class="habit-content">
-            <div class="habit-name">${escapeHtml(habit.name)}</div>
-            <div class="habit-meta">
-              <span class="streak-badge">🔥 ${habit.streak} day streak</span>
-            </div>
-          </div>
-          <button class="delete-btn" onclick="deleteHabit(${habit.id}, event)" aria-label="Delete">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            </svg>
-          </button>
-        </div>
-      `).join('');
-    }
+      if (killer === c.solution.killer && weapon === c.solution.weapon && room === c.solution.room) {
+        // Correct Deduction
+        if (!state.completedLevels.includes(c.id)) {
+          state.completedLevels.push(c.id);
+          saveState();
+        }
 
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    // Event Listeners
-    addBtnEl.addEventListener('click', addHabit);
-    habitInputEl.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') addHabit();
+        const isLastLevel = state.currentLevelIndex === CASES.length - 1;
+        showToast(
+          "⚖️ Case Solved!",
+          `Brilliant detective work. ${killer} committed the murder in the ${room} using the ${weapon}.`,
+          isLastLevel ? "Start Anew" : "Next Mystery",
+          () => {
+            if (!isLastLevel) {
+              state.currentLevelIndex++;
+            } else {
+              state.currentLevelIndex = 0;
+            }
+            saveState();
+            renderLevel();
+          }
+        );
+      } else {
+        // Wrong Deduction
+        showToast(
+          "❌ Flawed Alibi",
+          "Your accusation contradicts the witness testimonies or physical evidence. Double-check your scratchpad.",
+          "Re-examine Clues"
+        );
+      }
     });
 
-    // Init
-    updateDateDisplay();
-    loadHabits();
-    handleDayTransition();
-    render();
+    /* Generic Toast Modal */
+    let currentToastAction = null;
+    function showToast(title, message, buttonText, onAction = null) {
+      toastTitle.textContent = title;
+      toastMsg.textContent = message;
+      toastBtn.textContent = buttonText;
+      currentToastAction = onAction;
+      verdictToast.classList.add("active");
+    }
+
+    toastBtn.addEventListener("click", () => {
+      verdictToast.classList.remove("active");
+      if (currentToastAction) {
+        currentToastAction();
+        currentToastAction = null;
+      }
+    });
+
+    /* Level Drawer Handlers */
+    openLevelModalBtn.addEventListener("click", () => levelModal.classList.add("active"));
+    closeModalBtn.addEventListener("click", () => levelModal.classList.remove("active"));
+    levelModal.addEventListener("click", (e) => {
+      if (e.target === levelModal) levelModal.classList.remove("active");
+    });
+
+    // Boot
+    loadState();
+    renderLevel();
   </script>
 </body>
 </html>
