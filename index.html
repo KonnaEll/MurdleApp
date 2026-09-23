@@ -516,6 +516,112 @@
       margin-top: 14px;
       cursor: pointer;
     }
+    /* Victory Case Closed Fullscreen Overlay */
+    .victory-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(35, 15, 20, 0.96) 0%, rgba(10, 8, 10, 0.98) 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .victory-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .case-closed-stamp {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #ef4444;
+      border: 4px solid #ef4444;
+      padding: 10px 24px;
+      border-radius: 8px;
+      transform: rotate(-10deg) scale(2);
+      opacity: 0;
+      margin-bottom: 24px;
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+    }
+
+    .victory-overlay.active .case-closed-stamp {
+      animation: stampDrop 0.4s cubic-bezier(0.17, 0.89, 0.32, 1.25) 0.15s forwards;
+    }
+
+    @keyframes stampDrop {
+      0% { transform: rotate(-10deg) scale(2); opacity: 0; }
+      100% { transform: rotate(-8deg) scale(1); opacity: 1; }
+    }
+
+    .verdict-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 18px;
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .verdict-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+    }
+
+    .verdict-row-icon {
+      font-size: 1.8rem;
+      width: 40px;
+      text-align: center;
+    }
+
+    .verdict-row-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .verdict-row-val {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .victory-next-btn {
+      width: 100%;
+      max-width: 320px;
+      background: #16a34a;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(22, 163, 74, 0.45);
+    }
+
+    .victory-next-btn:active {
+      transform: scale(0.97);
+    }
   </style>
 </head>
 <body>
@@ -616,6 +722,35 @@
     <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 4px;" id="toast-title">Verdict</h3>
     <p style="font-size: 0.8rem; color: var(--ink-dim); line-height: 1.4;" id="toast-body"></p>
     <button class="toast-btn" id="toast-btn">Continue</button>
+  </div>
+
+  <!-- Fullscreen Victory / Case Closed Screen -->
+  <div class="victory-overlay" id="victory-screen">
+    <div class="case-closed-stamp">CASE CLOSED</div>
+    <div class="verdict-card">
+      <div class="verdict-row">
+        <span class="verdict-row-icon" id="vic-Murderer-icon"></span>
+        <div>
+          <div class="verdict-row-label">The Murderer</div>
+          <div class="verdict-row-val" id="vic-Murderer-name"></div>
+        </div>
+      </div>
+      <div class="verdict-row">
+        <span class="verdict-row-icon" id="vic-weapon-icon"></span>
+        <div>
+          <div class="verdict-row-label">Murder Weapon</div>
+          <div class="verdict-row-val" id="vic-weapon-name"></div>
+        </div>
+      </div>
+      <div class="verdict-row">
+        <span class="verdict-row-icon" id="vic-room-icon"></span>
+        <div>
+          <div class="verdict-row-label">Crime Scene</div>
+          <div class="verdict-row-val" id="vic-room-name"></div>
+        </div>
+      </div>
+    </div>
+    <button class="victory-next-btn" id="vic-next-btn">Next Case ▶</button>
   </div>
 
   <script>
@@ -1876,6 +2011,15 @@
     /* =========================================================================
        VERDICT VERIFICATION
        ========================================================================= */
+    const victoryScreen = document.getElementById("victory-screen");
+    const vicMurdererIcon = document.getElementById("vic-Murderer-icon");
+    const vicMurdererName = document.getElementById("vic-Murderer-name");
+    const vicWeaponIcon = document.getElementById("vic-weapon-icon");
+    const vicWeaponName = document.getElementById("vic-weapon-name");
+    const vicRoomIcon = document.getElementById("vic-room-icon");
+    const vicRoomName = document.getElementById("vic-room-name");
+    const vicNextBtn = document.getElementById("vic-next-btn");
+
     document.getElementById("submit-verdict").addEventListener("click", () => {
       const c = CASES[state.caseIndex];
       const s = accuseSuspect.value;
@@ -1883,7 +2027,7 @@
       const l = accuseLocation.value;
 
       if (!s || !w || !l) {
-        showToast("⚠️ Missing Facts", "Select the Murderer, Weapon, and Crime Scene before presenting your accusation.", "Examine Grid");
+        alert("⚠️ Incomplete accusation! Select the Murderer, Weapon, and Crime Scene.");
         return;
       }
 
@@ -1893,24 +2037,34 @@
           saveState();
         }
 
+        // Populate Victory Details with matching icons
+        const suspectObj = c.suspects.find(item => item.name === s);
+        const weaponObj = c.weapons.find(item => item.name === w);
+        const locationObj = c.locations.find(item => item.name === l);
+
+        vicMurdererIcon.textContent = suspectObj ? suspectObj.icon : "🕵️";
+        vicMurdererName.textContent = s;
+        vicWeaponIcon.textContent = weaponObj ? weaponObj.icon : "🔪";
+        vicWeaponName.textContent = w;
+        vicRoomIcon.textContent = locationObj ? locationObj.icon : "📍";
+        vicRoomName.textContent = l;
+
         const isLast = state.caseIndex === CASES.length - 1;
-        showToast(
-          "⚖️ GUILTY AS CHARGED!",
-          `Masterful deduction. ${s} committed the crime in the ${l} with the ${w}.`,
-          isLast ? "Restart Journey" : "Next Case",
-          () => {
-            state.caseIndex = isLast ? 0 : state.caseIndex + 1;
-            saveState();
-            renderActiveCase();
-          }
-        );
+        vicNextBtn.textContent = isLast ? "Restart Journey ↺" : "Next Case ▶";
+
+        // Show the Case Closed Stamp Screen
+        victoryScreen.classList.add("active");
       } else {
-        showToast(
-          "❌ INNOCENT!",
-          "Your accusation contradicts verified testimonies or forensic traces. Check your cross-marks (✕) and deductions.",
-          "Review Evidence"
-        );
+        alert("❌ INNOCENT!\n\nYour accusation contradicts the verified testimonies or physical evidence. Double-check your deduction grid.");
       }
+    });
+
+    vicNextBtn.addEventListener("click", () => {
+      victoryScreen.classList.remove("active");
+      const isLast = state.caseIndex === CASES.length - 1;
+      state.caseIndex = isLast ? 0 : state.caseIndex + 1;
+      saveState();
+      renderActiveCase();
     });
 
     /* Modals & Drawers */
