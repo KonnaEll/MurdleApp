@@ -3,30 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Murdoku - Mystery Logic</title>
+  <title>Murdoku - Logic Mystery</title>
 
-  <!-- iOS PWA Fullscreen Meta Tags -->
+  <!-- iOS Standalone Web App Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Murdoku">
-  <meta name="theme-color" content="#0d090a">
+  <meta name="theme-color" content="#121013">
 
-  <!-- Dynamic Detective Badge App Icon -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%230d090a'><rect width='100' height='100' rx='22' fill='%23171012'/><circle cx='50' cy='50' r='30' fill='%23b91c1c'/><path d='M35 50 L45 60 L65 40' fill='none' stroke='%23fef2f2' stroke-width='6' stroke-linecap='round'/><circle cx='50' cy='50' r='38' fill='none' stroke='%23d97706' stroke-width='2' stroke-dasharray='4 2'/></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%23121013'><rect width='100' height='100' rx='20' fill='%231f171a'/><circle cx='50' cy='50' r='32' fill='%23c2410c'/><path d='M35 50 L45 60 L65 40' fill='none' stroke='white' stroke-width='6' stroke-linecap='round'/></svg>">
 
   <style>
     :root {
-      --bg: #0d090a;
-      --card-bg: #181214;
-      --card-inner: #221a1d;
-      --accent-blood: #dc2626;
-      --accent-gold: #d97706;
-      --text: #f5f5f4;
-      --text-muted: #a8a29e;
-      --border: rgba(255, 255, 255, 0.1);
-      --cleared: #475569;
-      --confirmed: #16a34a;
-      --danger: #ef4444;
+      --bg: #121013;
+      --card: #1c181c;
+      --card-alt: #272127;
+      --ink: #f5f5f4;
+      --ink-dim: #a8a29e;
+      --red-blood: #dc2626;
+      --gold: #d97706;
+      --grid-border: #443a44;
+      --grid-heavy: #ffffff;
+      --cell-bg: #221d23;
     }
 
     * {
@@ -39,709 +37,865 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at top, #26171b 0%, var(--bg) 80%);
-      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at 50% 10%, #2b1f26 0%, var(--bg) 90%);
+      color: var(--ink);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding-top: max(env(safe-area-inset-top), 20px);
+      padding-top: max(env(safe-area-inset-top), 18px);
       padding-bottom: max(env(safe-area-inset-bottom), 24px);
-      padding-left: 16px;
-      padding-right: 16px;
+      padding-left: 14px;
+      padding-right: 14px;
       overflow-x: hidden;
     }
 
-    /* Top Header */
+    /* Header Bar */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      margin-bottom: 14px;
     }
 
-    .brand {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-    }
-
-    .brand h1 {
-      font-size: 1.5rem;
-      letter-spacing: 2px;
-      color: var(--accent-blood);
-      text-transform: uppercase;
+    .brand-title {
+      font-size: 1.45rem;
       font-weight: 900;
-    }
-
-    .brand span {
-      font-size: 0.75rem;
-      color: var(--accent-gold);
-      letter-spacing: 1px;
+      letter-spacing: 2px;
+      color: var(--red-blood);
       text-transform: uppercase;
     }
 
-    .level-select-btn {
-      background: var(--card-inner);
-      border: 1px solid var(--accent-gold);
-      color: var(--text);
+    .brand-sub {
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      color: var(--gold);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .header-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .top-btn {
+      background: var(--card-alt);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--ink);
       padding: 6px 12px;
       border-radius: 99px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
-      cursor: pointer;
+      gap: 4px;
     }
 
-    /* Case Dossier Card */
-    .dossier-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--accent-blood);
+    /* Case Dossier Box */
+    .dossier {
+      background: var(--card);
       border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      border-left: 4px solid var(--red-blood);
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .case-badge {
-      display: inline-block;
+    .dossier-tag {
       font-size: 0.65rem;
       text-transform: uppercase;
+      font-weight: 800;
       letter-spacing: 1px;
-      background: rgba(220, 38, 38, 0.2);
-      color: #fca5a5;
-      padding: 2px 8px;
-      border-radius: 4px;
-      margin-bottom: 6px;
-      font-weight: 700;
-    }
-
-    .case-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--text);
+      color: #f87171;
       margin-bottom: 4px;
     }
 
-    .case-story {
-      font-size: 0.82rem;
-      line-height: 1.45;
-      color: var(--text-muted);
+    .dossier-heading {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
     }
 
-    /* Clues Accordion / Section */
-    .section-title {
-      font-size: 0.85rem;
+    .dossier-narrative {
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--ink-dim);
+    }
+
+    /* Clues List */
+    .block-header {
+      font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--accent-gold);
+      letter-spacing: 1.5px;
+      color: var(--gold);
       margin-bottom: 8px;
+      font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: space-between;
     }
 
-    .clues-box {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
+    .clues-card {
+      background: var(--card);
       border-radius: 12px;
-      padding: 12px 14px;
-      margin-bottom: 16px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .clue-item {
-      font-size: 0.82rem;
-      color: #e7e5e4;
+    .clue-row {
+      font-size: 0.8rem;
+      color: #e5e5e5;
       line-height: 1.4;
       padding: 6px 0;
       border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
       display: flex;
-      align-items: flex-start;
       gap: 8px;
     }
 
-    .clue-item:last-child {
+    .clue-row:last-child {
       border-bottom: none;
     }
 
-    .clue-bullet {
-      color: var(--accent-blood);
+    .clue-marker {
+      color: var(--red-blood);
       font-weight: bold;
     }
 
-    /* Interactive Deduction Grid */
-    .grid-container {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 16px;
+    /* L-SHAPED DEDUCTION GRID */
+    .grid-scroller {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 12px 8px;
+      margin-bottom: 14px;
       overflow-x: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .deduction-table {
-      width: 100%;
+    .murdle-table {
       border-collapse: collapse;
       table-layout: fixed;
     }
 
-    .deduction-table th {
+    /* Header labels and categories */
+    .cat-super-header {
       font-size: 0.7rem;
-      padding: 6px 4px;
-      color: var(--accent-gold);
-      font-weight: 600;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      text-transform: uppercase;
       text-align: center;
-      word-wrap: break-word;
-      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
     }
 
-    .deduction-table td {
-      border: 1px solid rgba(255, 255, 255, 0.06);
+    .corner-void {
+      border: none !important;
+      background: transparent !important;
+    }
+
+    .col-item-header {
+      width: 44px;
+      max-width: 44px;
+      text-align: center;
+      padding: 4px 2px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--ink-dim);
+      border-bottom: 2px solid var(--grid-heavy);
+    }
+
+    .col-item-header .icon {
+      font-size: 1.25rem;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .row-item-header {
+      width: 80px;
+      min-width: 80px;
+      max-width: 80px;
+      text-align: right;
+      padding: 4px 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink-dim);
+      border-right: 2px solid var(--grid-heavy);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .row-item-header .icon {
+      margin-right: 4px;
+      font-size: 0.95rem;
+    }
+
+    .murdle-table td.cell-box {
+      width: 44px;
+      height: 44px;
+      padding: 2px;
+      border: 1px solid var(--grid-border);
+      background: var(--cell-bg);
       text-align: center;
       vertical-align: middle;
-      padding: 3px;
     }
 
-    .row-header {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      text-align: left !important;
-      font-weight: 600;
-      padding-left: 6px !important;
-      width: 85px;
-      background: rgba(0, 0, 0, 0.2);
+    /* Subgrid Borders (Thicker divider line between categories) */
+    .border-right-thick {
+      border-right: 3px solid var(--grid-heavy) !important;
     }
 
-    .grid-cell {
-      height: 38px;
-      background: var(--card-inner);
-      border-radius: 6px;
+    .border-bottom-thick {
+      border-bottom: 3px solid var(--grid-heavy) !important;
+    }
+
+    .grid-cell-btn {
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 1.05rem;
+      font-size: 1.15rem;
+      font-weight: 900;
+      border-radius: 4px;
       cursor: pointer;
-      transition: background 0.15s ease, transform 0.1s ease;
+      transition: background 0.15s, transform 0.1s;
     }
 
-    .grid-cell:active {
-      transform: scale(0.92);
+    .grid-cell-btn:active {
+      transform: scale(0.9);
     }
 
-    .cell-neutral {
-      color: transparent;
+    .cell-state-0 { color: transparent; }
+    .cell-state-1 { color: #f87171; background: rgba(239, 68, 68, 0.18); } /* X */
+    .cell-state-2 { color: #4ade80; background: rgba(34, 197, 94, 0.25); box-shadow: inset 0 0 6px rgba(34, 197, 94, 0.4); } /* Check */
+
+    /* Empty bottom-right quadrant branding */
+    .void-poster {
+      background: #140d11;
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      text-align: center;
     }
 
-    .cell-cross {
-      color: var(--danger);
-      background: rgba(239, 68, 68, 0.15);
+    .void-poster span {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--red-blood);
+      letter-spacing: 1px;
     }
 
-    .cell-match {
-      color: #4ade80;
-      background: rgba(34, 197, 94, 0.2);
-      box-shadow: inset 0 0 8px rgba(34, 197, 94, 0.3);
+    .void-poster p {
+      font-size: 0.55rem;
+      color: var(--ink-dim);
+      margin-top: 2px;
     }
 
+    /* Legend */
     .grid-legend {
       display: flex;
       justify-content: center;
       gap: 16px;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 8px;
+      font-size: 0.72rem;
+      color: var(--ink-dim);
+      margin-top: 10px;
     }
 
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* Accusation / Solution Panel */
-    .accuse-panel {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
+    /* Accusation Form */
+    .accusation-card {
+      background: var(--card);
       border-radius: 12px;
       padding: 14px;
-      margin-bottom: 80px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 24px;
     }
 
-    .verdict-selects {
+    .accuse-grid {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
-    .select-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .select-wrap label {
-      font-size: 0.72rem;
-      color: var(--text-muted);
+    .select-group label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 700;
       text-transform: uppercase;
-      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--ink-dim);
+      margin-bottom: 4px;
     }
 
     select {
-      background: var(--card-inner);
-      color: var(--text);
-      border: 1px solid var(--border);
+      width: 100%;
+      background: var(--card-alt);
+      color: var(--ink);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 8px;
-      padding: 8px 12px;
+      padding: 10px;
       font-size: 0.85rem;
       outline: none;
       -webkit-appearance: none;
     }
 
-    .solve-btn {
+    .accuse-btn {
       width: 100%;
-      background: var(--accent-blood);
-      color: #fff;
+      background: var(--red-blood);
+      color: white;
       border: none;
+      padding: 14px;
       border-radius: 10px;
-      padding: 12px;
-      font-weight: 700;
-      letter-spacing: 1px;
+      font-weight: 800;
+      font-size: 0.92rem;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      font-size: 0.9rem;
       cursor: pointer;
-      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.35);
+      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4);
     }
 
-    .solve-btn:active {
+    .accuse-btn:active {
       transform: scale(0.98);
     }
 
-    /* Level Selector Drawer Modal */
-    .modal-overlay {
+    /* Modals & Overlays */
+    .drawer-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       display: none;
       align-items: flex-end;
       z-index: 100;
     }
 
-    .modal-overlay.active {
+    .drawer-overlay.active {
       display: flex;
     }
 
-    .modal-content {
-      background: var(--card-bg);
+    .drawer-body {
+      background: var(--card);
       width: 100%;
       max-height: 80vh;
-      border-top-left-radius: 20px;
-      border-top-right-radius: 20px;
-      border-top: 1px solid var(--accent-gold);
-      padding: 20px 16px calc(max(env(safe-area-inset-bottom), 16px) + 20px);
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+      border-top: 1px solid var(--gold);
+      padding: 18px 16px calc(max(env(safe-area-inset-bottom), 16px) + 16px);
       overflow-y: auto;
     }
 
-    .modal-header {
+    .drawer-title-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
-    .modal-header h2 {
-      font-size: 1.15rem;
-      color: var(--accent-gold);
+    .drawer-title {
+      font-size: 1.1rem;
+      color: var(--gold);
+      font-weight: 700;
     }
 
-    .close-modal {
+    .close-drawer {
       background: transparent;
       border: none;
-      color: var(--text-muted);
+      color: var(--ink-dim);
       font-size: 1.4rem;
       cursor: pointer;
     }
 
-    .level-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .level-item {
-      background: var(--card-inner);
-      border: 1px solid var(--border);
+    .case-nav-item {
+      background: var(--card-alt);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
       padding: 12px;
+      margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
     }
 
-    .level-item.completed {
-      border-color: rgba(34, 197, 94, 0.4);
+    .case-nav-item.current {
+      border-color: var(--red-blood);
+      background: rgba(220, 38, 38, 0.12);
     }
 
-    .level-item.active-level {
-      border-color: var(--accent-blood);
-      background: rgba(220, 38, 38, 0.1);
+    .hint-bubble {
+      background: rgba(217, 119, 6, 0.15);
+      border: 1px solid var(--gold);
+      border-radius: 10px;
+      padding: 14px;
+      color: #fef3c7;
+      font-size: 0.88rem;
+      line-height: 1.45;
     }
 
-    .level-name {
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-
-    .level-diff {
-      font-size: 0.7rem;
-      color: var(--accent-gold);
-      margin-top: 2px;
-    }
-
-    /* Modal Outcome Toast */
-    .verdict-toast {
+    /* Result Toast */
+    .toast-box {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.9);
-      background: #181214;
-      border: 2px solid var(--border);
+      background: #181216;
+      border: 2px solid var(--grid-heavy);
       border-radius: 16px;
-      padding: 24px;
-      width: 85%;
+      padding: 22px;
+      width: 86%;
       max-width: 320px;
       text-align: center;
       z-index: 200;
       opacity: 0;
       pointer-events: none;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      transition: all 0.25s ease;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.85);
     }
 
-    .verdict-toast.active {
+    .toast-box.active {
       opacity: 1;
       pointer-events: auto;
       transform: translate(-50%, -50%) scale(1);
     }
 
-    .toast-icon {
-      font-size: 2.5rem;
-      margin-bottom: 8px;
-    }
-
-    .toast-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-
-    .toast-msg {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-      margin-bottom: 18px;
-    }
-
     .toast-btn {
       width: 100%;
-      background: var(--accent-blood);
-      color: #fff;
+      background: var(--red-blood);
+      color: white;
       border: none;
       padding: 10px;
       border-radius: 8px;
       font-weight: 700;
+      margin-top: 14px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation & Level Selector -->
   <header>
-    <div class="brand">
-      <h1>Murdoku</h1>
-      <span>Deduction</span>
+    <div>
+      <div class="brand-title">Murdoku</div>
+      <div class="brand-sub">The Logic Mystery Grid</div>
     </div>
-    <button class="level-select-btn" id="open-level-modal">
-      <span id="header-level-text">Case 1/10</span>
-      <span>▼</span>
-    </button>
+    <div class="header-btns">
+      <button class="top-btn" id="open-hint-btn">💡 Hint</button>
+      <button class="top-btn" id="open-archive-btn">📁 Cases</button>
+    </div>
   </header>
 
-  <!-- Case Story Details -->
-  <div class="dossier-card">
-    <div class="case-badge" id="case-difficulty">Difficulty: Novice</div>
-    <h2 class="case-title" id="case-title">The Parlor Poisoning</h2>
-    <p class="case-story" id="case-story">Lord Harrington has been found slain. Reconstruct the crime scene and identify the killer.</p>
+  <!-- Dossier -->
+  <div class="dossier">
+    <div class="dossier-tag" id="case-badge">Case 1 · Difficulty: Novice</div>
+    <h2 class="dossier-heading" id="case-title">The Observatory Blackout</h2>
+    <p class="dossier-narrative" id="case-story">A body has been found at the mountain research station. Cross-examine the evidence and fill out your deduction grid.</p>
   </div>
 
-  <!-- Clues List -->
-  <div class="section-title">
-    <span>🕵️‍♂️ Verified Clues & Alibis</span>
+  <!-- Clues -->
+  <div class="block-header">
+    <span>Witness Testimonies & Forensics</span>
   </div>
-  <div class="clues-box" id="clues-container">
-    <!-- Generated dynamically -->
-  </div>
+  <div class="clues-card" id="clues-box"></div>
 
-  <!-- Deduction Grid -->
-  <div class="section-title">
-    <span>📋 Detective Scratchpad</span>
+  <!-- L-Shaped Murdle Logic Grid -->
+  <div class="block-header">
+    <span>Deduction Matrix (Tap to cycle: Blank → ✕ → ✓)</span>
   </div>
-  <div class="grid-container">
-    <table class="deduction-table" id="deduction-grid">
-      <!-- Grid drawn dynamically -->
+  <div class="grid-scroller">
+    <table class="murdle-table" id="murdle-grid">
+      <!-- Generated Dynamically -->
     </table>
     <div class="grid-legend">
-      <div class="legend-item"><span style="color:var(--text-muted)">Blank:</span> Unknown</div>
-      <div class="legend-item"><span style="color:var(--danger); font-weight:bold;">✕:</span> Alibi / Excluded</div>
-      <div class="legend-item"><span style="color:#4ade80; font-weight:bold;">✓:</span> Linked / Guilty</div>
+      <span><strong>[Blank]</strong> Unknown</span>
+      <span style="color:#f87171;"><strong>[✕]</strong> Alibi/Excluded</span>
+      <span style="color:#4ade80;"><strong>[✓]</strong> Confirmed</span>
     </div>
   </div>
 
-  <!-- Accusation Form -->
-  <div class="accuse-panel">
-    <div class="section-title">
-      <span>⚖️ Formal Accusation</span>
+  <!-- Accusation -->
+  <div class="accusation-card">
+    <div class="block-header">
+      <span>Indictment</span>
     </div>
-    <div class="verdict-selects">
-      <div class="select-wrap">
-        <label>The Murderer</label>
-        <select id="select-killer"></select>
+    <div class="accuse-grid">
+      <div class="select-group">
+        <label>Culprit</label>
+        <select id="accuse-suspect"></select>
       </div>
-      <div class="select-wrap">
+      <div class="select-group">
         <label>Murder Weapon</label>
-        <select id="select-weapon"></select>
+        <select id="accuse-weapon"></select>
       </div>
-      <div class="select-wrap">
-        <label>Crime Scene</label>
-        <select id="select-room"></select>
+      <div class="select-group">
+        <label>Crime Scene Location</label>
+        <select id="accuse-location"></select>
       </div>
     </div>
-    <button class="solve-btn" id="submit-verdict">Close the Case</button>
+    <button class="accuse-btn" id="submit-verdict">Accuse & Solve Case</button>
   </div>
 
-  <!-- Level Selection Drawer Modal -->
-  <div class="modal-overlay" id="level-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Case Archives</h2>
-        <button class="close-modal" id="close-modal">&times;</button>
+  <!-- Case Archive Drawer -->
+  <div class="drawer-overlay" id="archive-modal">
+    <div class="drawer-body">
+      <div class="drawer-title-row">
+        <div class="drawer-title">Official Case Log</div>
+        <button class="close-drawer" id="close-archive">&times;</button>
       </div>
-      <div class="level-list" id="level-list">
-        <!-- Rendered dynamically -->
-      </div>
+      <div id="case-list-container"></div>
     </div>
   </div>
 
-  <!-- Result Dialog Toast -->
-  <div class="verdict-toast" id="verdict-toast">
-    <div class="toast-icon" id="toast-icon">🔍</div>
-    <div class="toast-title" id="toast-title">Verdict</div>
-    <div class="toast-msg" id="toast-msg">Case details message.</div>
+  <!-- Detective Hint Drawer -->
+  <div class="drawer-overlay" id="hint-modal">
+    <div class="drawer-body">
+      <div class="drawer-title-row">
+        <div class="drawer-title">Detective's Ledger Hint</div>
+        <button class="close-drawer" id="close-hint">&times;</button>
+      </div>
+      <div class="hint-bubble" id="hint-text"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Modal -->
+  <div class="toast-box" id="result-toast">
+    <div style="font-size: 2.2rem; margin-bottom: 6px;" id="toast-icon">⚖️</div>
+    <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 4px;" id="toast-title">Verdict</h3>
+    <p style="font-size: 0.8rem; color: var(--ink-dim); line-height: 1.4;" id="toast-body"></p>
     <button class="toast-btn" id="toast-btn">Continue</button>
   </div>
 
   <script>
-    /* ========================================================
-       10 CURATED CASES (Ascending Difficulty & Scale)
-       Grid Types: 3x3 (Intro) -> 4x4 (Advanced Multi-variable)
-       ======================================================== */
+    /* =========================================================================
+       10 THOROUGHLY VERIFIED CASES WITH FULL 3-WAY RELATIONSHIPS
+       Suspects, Weapons, and Locations with Emojis & Clever Hints
+       ========================================================================= */
     const CASES = [
       {
         id: 1,
-        title: "The Manor Tea Time",
+        title: "The Mountain Observatory",
         difficulty: "Novice",
-        story: "Lord Harrington slumped over his evening chamomile. One suspect poisoned the tea in a specific room.",
-        suspects: ["Butler", "Maid", "Nephew"],
-        weapons: ["Poison", "Dagger", "Pistol"],
-        rooms: ["Study", "Kitchen", "Parlor"],
-        clues: [
-          "The Butler was cleaning dishes in the Kitchen all night.",
-          "The Dagger was safely locked in the Study display cabinet.",
-          "The Nephew had an alibi in the Parlor playing piano.",
-          "The victim had no knife or bullet wounds; he ingested something fatal."
+        story: "A quiet telescope night turned fatal when the astronomer collapsed during a sudden outage.",
+        suspects: [
+          { name: "Dr. Violet", icon: "🟣" },
+          { name: "Dean Cobalt", icon: "🔵" },
+          { name: "Judge Amber", icon: "🟠" }
         ],
-        solution: { killer: "Maid", weapon: "Poison", room: "Study" }
+        weapons: [
+          { name: "Neurotoxin", icon: "🧠" },
+          { name: "Coiled Wire", icon: "➰" },
+          { name: "Heavy Goggles", icon: "🥽" }
+        ],
+        locations: [
+          { name: "Archive A", icon: "🅰️" },
+          { name: "Lab Center", icon: "🏢" },
+          { name: "Radio Dish", icon: "📡" }
+        ],
+        clues: [
+          "Dr. Violet was logged examining instruments at the Radio Dish all evening.",
+          "The victim had no strangulation or impact trauma; they ingested lethal Neurotoxin.",
+          "Dean Cobalt never stepped foot into Archive A.",
+          "The person at the Lab Center had the Coiled Wire."
+        ],
+        hint: "Cross-reference who was at the Lab Center with the wire, then see who is left for Archive A.",
+        solution: { suspect: "Judge Amber", weapon: "Neurotoxin", location: "Archive A" }
       },
       {
         id: 2,
-        title: "Midnight in the Gallery",
+        title: "The Old Clocktower Mystery",
         difficulty: "Novice",
-        story: "An art patron was struck down before the midnight auction. Three collectors had exclusive keys.",
-        suspects: ["Countess", "Doctor", "Painter"],
-        weapons: ["Bronze Bust", "Fountain Pen", "Chandelier Cord"],
-        rooms: ["Vault", "Gallery", "Lobby"],
-        clues: [
-          "The Doctor was attending a guest who fainted in the Lobby.",
-          "The Bronze Bust was undisturbed on the pedestal in the Vault.",
-          "The Chandelier Cord was uncoiled in the Gallery where broken frames were found.",
-          "The Painter was proven to be locked in the Vault examining canvases."
+        story: "The gears jammed as bells chimed twelve. A body was wedged inside the mechanism.",
+        suspects: [
+          { name: "Silversmith", icon: "🪙" },
+          { name: "Watchmaker", icon: "🕰️" },
+          { name: "Apprentice", icon: "🔧" }
         ],
-        solution: { killer: "Countess", weapon: "Chandelier Cord", room: "Gallery" }
+        weapons: [
+          { name: "Heavy Gear", icon: "⚙️" },
+          { name: "Pendulum Cord", icon: "🪢" },
+          { name: "Acid Vial", icon: "🧪" }
+        ],
+        locations: [
+          { name: "Bell Loft", icon: "🔔" },
+          { name: "Dial Room", icon: "⏲️" },
+          { name: "Workshop", icon: "🏭" }
+        ],
+        clues: [
+          "The Silversmith was observed working alone down in the Workshop.",
+          "The Pendulum Cord was confiscated inside the Dial Room.",
+          "Forensic burns proved the fatal weapon was the Acid Vial.",
+          "The Apprentice was clearing pigeons out of the high Bell Loft."
+        ],
+        hint: "Trace each person's exact location first. The one who remains carried the corrosive vial.",
+        solution: { suspect: "Watchmaker", weapon: "Acid Vial", location: "Workshop" }
       },
       {
         id: 3,
-        title: "The Cellar Conspiracy",
+        title: "The Botanical Glasshouse",
         difficulty: "Easy",
-        story: "A vintage cask hid a dark secret. An estate guest orchestrated a lethal trap downstairs.",
-        suspects: ["Sommelier", "Professor", "Heiress"],
-        weapons: ["Corkscrew", "Lead Pipe", "Arsenic"],
-        rooms: ["Cellar", "Billiard Room", "Trophy Hall"],
-        clues: [
-          "Forensics revealed blunt force trauma; neither toxins nor piercing wounds were found.",
-          "The Heiress was shooting pool in the Billiard Room with two eyewitnesses.",
-          "The Sommelier was discovered unconscious in the Trophy Hall.",
-          "The Lead Pipe was pulled straight out of the Cellar's drainage canal."
+        story: "Under misty glass, a rare hybrid bloom was ruined—and the head groundskeeper eliminated.",
+        suspects: [
+          { name: "Florist", icon: "🌹" },
+          { name: "Herbalist", icon: "🌿" },
+          { name: "Baron", icon: "🎩" }
         ],
-        solution: { killer: "Professor", weapon: "Lead Pipe", room: "Cellar" }
+        weapons: [
+          { name: "Pruning Shears", icon: "✂️" },
+          { name: "Garden Spade", icon: "🪴" },
+          { name: "Wolfsbane", icon: "☠️" }
+        ],
+        locations: [
+          { name: "Greenhouse", icon: "🌺" },
+          { name: "Boiler Room", icon: "🔥" },
+          { name: "Rose Gazebo", icon: "🏛️" }
+        ],
+        clues: [
+          "The Baron was taking afternoon coffee inside the Rose Gazebo.",
+          "The Garden Spade was discovered resting in the Greenhouse.",
+          "The Herbalist was stoking coal inside the Boiler Room.",
+          "The victim was found with deep sharp punctures from Pruning Shears."
+        ],
+        hint: "Notice who was in the Boiler Room and who possessed the shears according to the location grid.",
+        solution: { suspect: "Florist", weapon: "Pruning Shears", location: "Greenhouse" }
       },
       {
         id: 4,
-        title: "Shadows in the Conservatory",
+        title: "Murder on the Alpine Express",
         difficulty: "Easy",
-        story: "Rain lashed against the glass greenhouse as screams echoed through the gardens.",
-        suspects: ["Botanist", "Chauffeur", "Colonel"],
-        weapons: ["Pruning Shears", "Revolver", "Strychnine"],
-        rooms: ["Greenhouse", "Garage", "Terrace"],
-        clues: [
-          "The Chauffeur was repairing tire treads in the Garage during the entire downpour.",
-          "No gunshots were reported by anyone inside or outside the mansion.",
-          "The Colonel was seen smoking a cigar on the covered Terrace.",
-          "Cuttings of rare orchids were found entangled with the bloody Pruning Shears."
+        story: "Snow blocked the tracks and the dining lights cut out. A diplomat was assassinated.",
+        suspects: [
+          { name: "Countess", icon: "💎" },
+          { name: "Officer", icon: "🎖️" },
+          { name: "Spy", icon: "🕶️" }
         ],
-        solution: { killer: "Botanist", weapon: "Pruning Shears", room: "Greenhouse" }
+        weapons: [
+          { name: "Silver Dagger", icon: "🗡️" },
+          { name: "Lethal Brandy", icon: "🍷" },
+          { name: "Pocket Pistol", icon: "🔫" }
+        ],
+        locations: [
+          { name: "Dining Car", icon: "🍽️" },
+          { name: "Sleeper Cabin", icon: "🛏️" },
+          { name: "Baggage Car", icon: "🧳" }
+        ],
+        clues: [
+          "The Countess stayed seated in the crowded Dining Car surrounded by witnesses.",
+          "A deafening gunshot echoed—confirming the Pocket Pistol was used.",
+          "The Silver Dagger was tucked away in the Baggage Car.",
+          "The Officer was verified sleeping soundly in the Sleeper Cabin."
+        ],
+        hint: "Determine which room was connected to the pistol shot by seeing where the unproven suspect went.",
+        solution: { suspect: "Spy", weapon: "Pocket Pistol", location: "Baggage Car" }
       },
       {
         id: 5,
-        title: "The Express Compartment",
+        title: "The Grand Library Archives",
         difficulty: "Medium",
-        story: "As the alpine express crossed into the tunnel, the lights flickered and a diplomat fell silent.",
-        suspects: ["Conductor", "Baroness", "Spy"],
-        weapons: ["Garrote Wire", "Pocket Knife", "Soporific"],
-        rooms: ["Cabin A", "Dining Car", "Luggage Van"],
-        clues: [
-          "The Dining Car was packed with passengers; nobody died there.",
-          "The Conductor stamped tickets in Cabin A alongside multiple witnesses.",
-          "The victim was found strangled in the dark; sharp blades were ruled out.",
-          "The Baroness never set foot inside the Luggage Van."
+        story: "A rare occult folio was torn, and the chief archivist silenced beneath the book stacks.",
+        suspects: [
+          { name: "Librarian", icon: "📚" },
+          { name: "Professor", icon: "🎓" },
+          { name: "Collector", icon: "💼" }
         ],
-        solution: { killer: "Spy", weapon: "Garrote Wire", room: "Luggage Van" }
+        weapons: [
+          { name: "Brass Bookend", icon: "🧱" },
+          { name: "Letter Opener", icon: "✒️" },
+          { name: "Arsenic Ink", icon: "🫙" }
+        ],
+        locations: [
+          { name: "Rare Vault", icon: "🗝️" },
+          { name: "Reading Room", icon: "📖" },
+          { name: "Belfry Tower", icon: "🏰" }
+        ],
+        clues: [
+          "The Professor spent the midnight hours researching in the Reading Room.",
+          "The Brass Bookend caused fatal blunt-force trauma; poison was eliminated.",
+          "The Collector had an appointment inside the Belfry Tower.",
+          "The Letter Opener was left forgotten in the Rare Vault."
+        ],
+        hint: "If the Bookend did it, see which location didn't have the letter opener or the tower guests.",
+        solution: { suspect: "Librarian", weapon: "Brass Bookend", location: "Rare Vault" }
       },
       {
         id: 6,
-        title: "The Grand Library Enigma",
-        difficulty: "Medium (4 Variables)",
-        story: "The head archivist was pinned beneath fallen shelves. 4 scholars were conducting late-night research.",
-        suspects: ["Dean", "Librarian", "Historian", "Student"],
-        weapons: ["Heavy Tome", "Letter Opener", "Cyanide", "Brass Lamp"],
-        rooms: ["Archives", "Reading Hall", "Tower", "Office"],
-        clues: [
-          "The Student was seen writing in the Reading Hall until dawn.",
-          "The Dean was giving a private conference in the high Tower.",
-          "The Brass Lamp and Letter Opener were inspected and cleared of fingerprints.",
-          "Cyanide residues were discovered inside an inkwell located in the Archives.",
-          "The Historian was confirmed to be working in the Office."
+        title: "The Harbor Fog Syndicate",
+        difficulty: "Medium",
+        story: "As tides rolled in, an illicit cargo boss met an untimely end by the murky docks.",
+        suspects: [
+          { name: "Captain", icon: "⚓" },
+          { name: "Smuggler", icon: "📦" },
+          { name: "Diver", icon: "🤿" }
         ],
-        solution: { killer: "Librarian", weapon: "Cyanide", room: "Archives" }
+        weapons: [
+          { name: "Harpoon", icon: "🔱" },
+          { name: "Anchor Chain", icon: "⛓️" },
+          { name: "Flare Gun", icon: "💥" }
+        ],
+        locations: [
+          { name: "Pier 4", icon: "🚢" },
+          { name: "Fish Market", icon: "🐟" },
+          { name: "Boathouse", icon: "🛶" }
+        ],
+        clues: [
+          "The Captain was haggling with fishermen inside the Fish Market.",
+          "The Anchor Chain was tangled under the floats at Pier 4.",
+          "The Diver was verified testing air tanks in the Boathouse.",
+          "The victim had rope and link bruising; neither harpoon nor burns were found."
+        ],
+        hint: "Check which suspect had no market or boathouse alibi to find who dragged the heavy chain.",
+        solution: { suspect: "Smuggler", weapon: "Anchor Chain", location: "Pier 4" }
       },
       {
         id: 7,
-        title: "The Black Harbor Wharf",
+        title: "The Pharaoh's Dig",
         difficulty: "Challenging",
-        story: "A cargo manifest was stolen and the harbor master silenced right as the fog rolled over the dock.",
-        suspects: ["Captain", "Smuggler", "Deckhand", "Merchant"],
-        weapons: ["Harpoon", "Flare Gun", "Anchor Rope", "Club"],
-        rooms: ["Pier 9", "Warehouse", "Crow's Nest", "Customs House"],
-        clues: [
-          "The Merchant was negotiating cargo tariffs in the Customs House.",
-          "The Anchor Rope was knotted in Pier 9 where struggle marks were washed by high tide.",
-          "The Captain was sighted high in the Crow's Nest logging wind speeds.",
-          "The Deckhand has an alibi loading crates into the Warehouse.",
-          "The victim had rope burns; neither gun powder nor piercing weapons were used."
+        story: "Hieroglyphs concealed a chamber where an archaeologist was buried before uncovering the tomb.",
+        suspects: [
+          { name: "Surveyor", icon: "📐" },
+          { name: "Doctor", icon: "🩺" },
+          { name: "Sponsor", icon: "💰" }
         ],
-        solution: { killer: "Smuggler", weapon: "Anchor Rope", room: "Pier 9" }
+        weapons: [
+          { name: "Bronze Pick", icon: "⛏️" },
+          { name: "Scorpion Venom", icon: "🦂" },
+          { name: "Linen Shroud", icon: "🧣" }
+        ],
+        locations: [
+          { name: "Burial Crypt", icon: "⚰️" },
+          { name: "Camp Tent", icon: "⛺" },
+          { name: "Excavation Pit", icon: "🏜️" }
+        ],
+        clues: [
+          "The Doctor was treating heat exhaustion at the Camp Tent.",
+          "The Bronze Pick was found abandoned in the Excavation Pit.",
+          "The Surveyor was mapping coordinate grids out in the Excavation Pit.",
+          "Toxicological analysis revealed lethal Scorpion Venom in the victim's water skin."
+        ],
+        hint: "Connect the survivor at the tent and the surveyor at the pit to locate where the fatal venom was drawn.",
+        solution: { suspect: "Sponsor", weapon: "Scorpion Venom", location: "Burial Crypt" }
       },
       {
         id: 8,
-        title: "The Clockwork Workshop",
+        title: "The Grand Opera House",
         difficulty: "Challenging",
-        story: "Gears seized when a gearmaker was eliminated during the chimes of three.",
-        suspects: ["Apprentice", "Guildmaster", "Financier", "Rival"],
-        weapons: ["Ticking Bomb", "Heavy Wrench", "Glass Shard", "Spring Wire"],
-        rooms: ["Foundry", "Drafting Room", "Bell Tower", "Vault"],
-        clues: [
-          "The Financier was auditing ledgers locked inside the Vault.",
-          "The Guildmaster was seen calibrating pendulum arms in the Bell Tower.",
-          "The Heavy Wrench caused the fatal fracture; explosives and blades were intact.",
-          "The Apprentice was sweating near the smelter in the Foundry.",
-          "The murder happened in the Drafting Room where schematics were smeared."
+        story: "During the final aria, the lead tenor dropped before the standing ovation could begin.",
+        suspects: [
+          { name: "Soprano", icon: "🎭" },
+          { name: "Maestro", icon: "🎼" },
+          { name: "Stagehand", icon: "🔦" }
         ],
-        solution: { killer: "Rival", weapon: "Heavy Wrench", room: "Drafting Room" }
+        weapons: [
+          { name: "Stage Dagger", icon: "🗡️" },
+          { name: "Chandelier Weight", icon: "⚖️" },
+          { name: "Silk Scarf", icon: "🧣" }
+        ],
+        locations: [
+          { name: "Dressing Room", icon: "💄" },
+          { name: "Orchestra Pit", icon: "🎻" },
+          { name: "The Catwalk", icon: "🪜" }
+        ],
+        clues: [
+          "The Maestro was conducting musicians down in the Orchestra Pit.",
+          "The Chandelier Weight was rigged and dropped directly from The Catwalk.",
+          "The Soprano remained before her mirrors in the Dressing Room.",
+          "The fatal blow was blunt impact trauma from a fallen ballast."
+        ],
+        hint: "Look up toward the ceiling. Who lacked an alibi down on stage or in the backstage rooms?",
+        solution: { suspect: "Stagehand", weapon: "Chandelier Weight", location: "The Catwalk" }
       },
       {
         id: 9,
-        title: "The Opera Masquerade",
+        title: "The Alchemist's Crypt",
         difficulty: "Expert",
-        story: "Behind silk masks, someone carried out a calculated vendetta behind the red velvet curtains.",
-        suspects: ["Tenor", "Prima Donna", "Director", "Stagehand"],
-        weapons: ["Rapier", "Poison Vial", "Sandbag Drop", "Silk Scarf"],
-        rooms: ["Backstage", "Dressing Room", "Orchestra Pit", "Fly Loft"],
-        clues: [
-          "The Prima Donna never left her Dressing Room while warming her vocals.",
-          "The Director was arguing with musicians down in the Orchestra Pit.",
-          "The fatal blow was delivered by an intentionally dropped Sandbag from high above.",
-          "The Stagehand claims he was in the Fly Loft, but the ropes were cut from Backstage.",
-          "The Tenor has no alibi for the Backstage rigging station where the release winch was found."
+        story: "In a subterranean laboratory, the formula for gold brought a deadly end to the head master.",
+        suspects: [
+          { name: "Adept", icon: "🔮" },
+          { name: "Monk", icon: "🕯️" },
+          { name: "Merchant", icon: "📜" }
         ],
-        solution: { killer: "Tenor", weapon: "Sandbag Drop", room: "Backstage" }
+        weapons: [
+          { name: "Brimstone Gas", icon: "♨️" },
+          { name: "Silver Athame", icon: "🗡️" },
+          { name: "Molten Lead", icon: "🫗" }
+        ],
+        locations: [
+          { name: "Sanctum Altar", icon: "⛪" },
+          { name: "Dungeon Cell", icon: "🗝️" },
+          { name: "Scriptorium", icon: "🪶" }
+        ],
+        clues: [
+          "The Monk was copying sacred scriptures in the Scriptorium all evening.",
+          "The Silver Athame was mounted undisturbed upon the Sanctum Altar.",
+          "The Merchant was locked in negotiation down in the Dungeon Cell.",
+          "The victim had clear lungs and no cuts, but suffered severe burns from Molten Lead."
+        ],
+        hint: "Match the undisturbed dagger to its holy site, then deduce where the liquid metal was poured.",
+        solution: { suspect: "Adept", weapon: "Molten Lead", location: "Sanctum Altar" }
       },
       {
         id: 10,
-        title: "The Crypt of the Alchemist",
+        title: "The Midnight Masquerade",
         difficulty: "Mastermind",
-        story: "The philosopher's secret brought death to the underground catacombs. Every clue must be correlated.",
-        suspects: ["Occultist", "Monk", "Graverobber", "Scholar"],
-        weapons: ["Ritual Athame", "Brimstone Gas", "Silver Candelabra", "Iron Chain"],
-        rooms: ["Altar", "Catacombs", "Scriptorium", "Embalming Chamber"],
-        clues: [
-          "The Scholar was transcribing ancient scrolls in the Scriptorium with the Monk.",
-          "The Monk never possessed weapons or left the scriptorium.",
-          "The victim succumbed to inhaled Brimstone Gas; wounds from chains and blades are nonexistent.",
-          "The Graverobber was caught excavating relics in the distant Catacombs.",
-          "The fatal vapors were vented directly into the Altar sanctum."
+        story: "Behind Venetian velvet masks, one royal guest settled a generational blood debt.",
+        suspects: [
+          { name: "Duke", icon: "👑" },
+          { name: "Jester", icon: "🃏" },
+          { name: "Baroness", icon: "🦚" }
         ],
-        solution: { killer: "Occultist", weapon: "Brimstone Gas", room: "Altar" }
+        weapons: [
+          { name: "Poisoned Needle", icon: "🪡" },
+          { name: "Stiletto", icon: "🗡️" },
+          { name: "Heavy Goblet", icon: "🏆" }
+        ],
+        locations: [
+          { name: "Ballroom", icon: "💃" },
+          { name: "Terrace Garden", icon: "🪴" },
+          { name: "Wine Cellar", icon: "🍾" }
+        ],
+        clues: [
+          "The Baroness danced in plain view across the crowded Ballroom.",
+          "The Stiletto was found wiped clean out on the Terrace Garden.",
+          "The Jester was performing acrobatic routines in the Terrace Garden.",
+          "A microscopic puncture and rapid cyanosis proved the Poisoned Needle was used.",
+          "The Heavy Goblet was resting untouched on the Ballroom bar."
+        ],
+        hint: "Two people have air-tight alibis in public areas. Who slipped downstairs where the toxic trap was set?",
+        solution: { suspect: "Duke", weapon: "Poisoned Needle", location: "Wine Cellar" }
       }
     ];
 
-    /* ========================================================
-       APPLICATION STATE & PERSISTENCE
-       ======================================================== */
-    const STORAGE_KEY = "murdoku_game_v1";
+    /* =========================================================================
+       STATE & PERSISTENCE
+       ========================================================================= */
+    const STORAGE_KEY = "murdoku_lgrid_v2";
     let state = {
-      currentLevelIndex: 0,
-      completedLevels: [],
-      // Cell state map: key `${levelId}_${row}_${col}` -> 0: empty, 1: cross, 2: match
-      scratchpad: {}
+      caseIndex: 0,
+      completed: [],
+      // Cell storage: key format `${caseId}_${subgrid}_${r}_${c}` -> 0: blank, 1: X, 2: Check
+      gridCells: {}
     };
 
     function loadState() {
       try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          state = Object.assign(state, JSON.parse(saved));
-        }
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) state = Object.assign(state, JSON.parse(stored));
       } catch (e) {
-        console.error("Storage load error", e);
+        console.error("Storage error", e);
       }
     }
 
@@ -749,203 +903,258 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
-    /* ========================================================
-       DOM ELEMENTS
-       ======================================================== */
-    const headerLevelText = document.getElementById("header-level-text");
-    const caseBadge = document.getElementById("case-difficulty");
+    /* =========================================================================
+       L-SHAPED GRID RENDERING
+       Layout matches the Murdle volume diagram:
+       -------------------------------------------------------------
+       Corner Void             |  SUSPECTS (3 cols) | LOCATIONS (3 cols)
+       -------------------------------------------------------------
+       WEAPONS (3 rows)        |  Grid 1 (W x S)    | Grid 2 (W x L)
+       -------------------------------------------------------------
+       LOCATIONS (3 rows)      |  Grid 3 (L x S)    | VOID / BOOK BADGE
+       -------------------------------------------------------------
+       ========================================================================= */
+    function renderLGrid(c) {
+      const table = document.getElementById("murdle-grid");
+      let html = "";
+
+      // Header row 1: Super categories
+      html += `<tr>
+        <th class="corner-void" colspan="1"></th>
+        <th class="cat-super-header border-right-thick" colspan="3">SUSPECTS</th>
+        <th class="cat-super-header" colspan="3">LOCATIONS</th>
+      </tr>`;
+
+      // Header row 2: Item icons & names
+      html += `<tr>
+        <th class="corner-void"></th>`;
+      c.suspects.forEach((s, idx) => {
+        const thick = idx === c.suspects.length - 1 ? 'border-right-thick' : '';
+        html += `<th class="col-item-header ${thick}"><span class="icon">${s.icon}</span>${s.name.split(' ')[0]}</th>`;
+      });
+      c.locations.forEach((loc) => {
+        html += `<th class="col-item-header"><span class="icon">${loc.icon}</span>${loc.name.split(' ')[0]}</th>`;
+      });
+      html += `</tr>`;
+
+      // TOP HALF: WEAPONS ROWS (Grid 1: W x S, Grid 2: W x L)
+      c.weapons.forEach((w, wIdx) => {
+        const isLastRow = wIdx === c.weapons.length - 1;
+        const rowClass = isLastRow ? 'border-bottom-thick' : '';
+        html += `<tr>
+          <td class="row-item-header ${rowClass}"><span class="icon">${w.icon}</span>${w.name}</td>`;
+
+        // Subgrid 1: Weapon x Suspect
+        c.suspects.forEach((s, sIdx) => {
+          const isLastCol = sIdx === c.suspects.length - 1;
+          const colClass = isLastCol ? 'border-right-thick' : '';
+          const key = `${c.id}_WS_${wIdx}_${sIdx}`;
+          html += renderCell(key, `${rowClass} ${colClass}`);
+        });
+
+        // Subgrid 2: Weapon x Location
+        c.locations.forEach((loc, lIdx) => {
+          const key = `${c.id}_WL_${wIdx}_${lIdx}`;
+          html += renderCell(key, rowClass);
+        });
+
+        html += `</tr>`;
+      });
+
+      // BOTTOM HALF: LOCATIONS ROWS (Grid 3: L x S, Bottom-Right: Book Void)
+      c.locations.forEach((loc, lIdx) => {
+        html += `<tr>
+          <td class="row-item-header"><span class="icon">${loc.icon}</span>${loc.name}</td>`;
+
+        // Subgrid 3: Location x Suspect
+        c.suspects.forEach((s, sIdx) => {
+          const isLastCol = sIdx === c.suspects.length - 1;
+          const colClass = isLastCol ? 'border-right-thick' : '';
+          const key = `${c.id}_LS_${lIdx}_${sIdx}`;
+          html += renderCell(key, colClass);
+        });
+
+        // Bottom-Right Quadrant: Merged on first row for Murdle style poster
+        if (lIdx === 0) {
+          html += `<td colspan="3" rowspan="3" class="corner-void" style="padding:4px;">
+            <div class="void-poster" style="height: 100%;">
+              <span>MURDOKU</span>
+              <p>THE DEDUCTION MATRIX</p>
+              <div style="font-size: 1.4rem; margin-top: 4px;">🕵️‍♂️</div>
+            </div>
+          </td>`;
+        }
+
+        html += `</tr>`;
+      });
+
+      table.innerHTML = html;
+    }
+
+    function renderCell(key, extraBorder) {
+      const val = state.gridCells[key] || 0;
+      let mark = "";
+      if (val === 1) mark = "✕";
+      if (val === 2) mark = "✓";
+
+      return `<td class="cell-box ${extraBorder}">
+        <div class="grid-cell-btn cell-state-${val}" onclick="cycleCell('${key}')">${mark}</div>
+      </td>`;
+    }
+
+    window.cycleCell = function(key) {
+      const current = state.gridCells[key] || 0;
+      state.gridCells[key] = (current + 1) % 3;
+      saveState();
+      renderLGrid(CASES[state.caseIndex]);
+    };
+
+    /* =========================================================================
+       DISPLAY ENGINE & CONTROLLERS
+       ========================================================================= */
+    const caseBadge = document.getElementById("case-badge");
     const caseTitle = document.getElementById("case-title");
     const caseStory = document.getElementById("case-story");
-    const cluesContainer = document.getElementById("clues-container");
-    const deductionGrid = document.getElementById("deduction-grid");
-    const selectKiller = document.getElementById("select-killer");
-    const selectWeapon = document.getElementById("select-weapon");
-    const selectRoom = document.getElementById("select-room");
-    const submitVerdictBtn = document.getElementById("submit-verdict");
-    const openLevelModalBtn = document.getElementById("open-level-modal");
-    const levelModal = document.getElementById("level-modal");
-    const closeModalBtn = document.getElementById("close-modal");
-    const levelList = document.getElementById("level-list");
-    const verdictToast = document.getElementById("verdict-toast");
-    const toastIcon = document.getElementById("toast-icon");
-    const toastTitle = document.getElementById("toast-title");
-    const toastMsg = document.getElementById("toast-msg");
-    const toastBtn = document.getElementById("toast-btn");
+    const cluesBox = document.getElementById("clues-box");
+    const accuseSuspect = document.getElementById("accuse-suspect");
+    const accuseWeapon = document.getElementById("accuse-weapon");
+    const accuseLocation = document.getElementById("accuse-location");
+    const hintText = document.getElementById("hint-text");
 
-    /* ========================================================
-       RENDER GAME ENGINE
-       ======================================================== */
-    function renderLevel() {
-      const c = CASES[state.currentLevelIndex];
-      headerLevelText.textContent = `Case ${c.id}/10`;
-      caseBadge.textContent = `Difficulty: ${c.difficulty}`;
-      caseTitle.textContent = `${c.id}. ${c.title}`;
+    function renderActiveCase() {
+      const c = CASES[state.caseIndex];
+      caseBadge.textContent = `Case ${c.id} of 10 · ${c.difficulty}`;
+      caseTitle.textContent = c.title;
       caseStory.textContent = c.story;
 
       // Clues
-      cluesContainer.innerHTML = c.clues.map(clue => `
-        <div class="clue-item">
-          <span class="clue-bullet">▸</span>
+      cluesBox.innerHTML = c.clues.map(clue => `
+        <div class="clue-row">
+          <span class="clue-marker">▸</span>
           <span>${clue}</span>
         </div>
       `).join("");
 
-      // Select Dropdowns
-      populateSelect(selectKiller, c.suspects, "Select Suspect...");
-      populateSelect(selectWeapon, c.weapons, "Select Weapon...");
-      populateSelect(selectRoom, c.rooms, "Select Room...");
+      // Hint
+      hintText.textContent = c.hint;
 
-      // Render Deduction Grid
-      renderGrid(c);
-      renderLevelList();
+      // Dropdowns
+      fillSelect(accuseSuspect, c.suspects.map(s => `${s.icon} ${s.name}`), c.suspects.map(s => s.name));
+      fillSelect(accuseWeapon, c.weapons.map(w => `${w.icon} ${w.name}`), c.weapons.map(w => w.name));
+      fillSelect(accuseLocation, c.locations.map(l => `${l.icon} ${l.name}`), c.locations.map(l => l.name));
+
+      // L-Grid
+      renderLGrid(c);
+      renderCaseList();
     }
 
-    function populateSelect(selectEl, items, placeholder) {
-      selectEl.innerHTML = `<option value="">-- ${placeholder} --</option>` +
-        items.map(item => `<option value="${item}">${item}</option>`).join("");
+    function fillSelect(select, labels, values) {
+      select.innerHTML = '<option value="">-- Choose --</option>' +
+        values.map((v, i) => `<option value="${v}">${labels[i]}</option>`).join("");
     }
 
-    /* Draw deduction grid: Suspects on Rows, Weapons & Rooms on Columns */
-    function renderGrid(c) {
-      const colHeaders = [...c.weapons, ...c.rooms];
-      let html = `<thead><tr><th class="row-header">Suspects</th>`;
-      colHeaders.forEach(col => {
-        html += `<th>${col}</th>`;
-      });
-      html += `</tr></thead><tbody>`;
+    /* =========================================================================
+       ACCUSATION & SOLVE VERIFICATION
+       ========================================================================= */
+    document.getElementById("submit-verdict").addEventListener("click", () => {
+      const c = CASES[state.caseIndex];
+      const s = accuseSuspect.value;
+      const w = accuseWeapon.value;
+      const l = accuseLocation.value;
 
-      c.suspects.forEach((suspect, rIdx) => {
-        html += `<tr><td class="row-header">${suspect}</td>`;
-        colHeaders.forEach((col, cIdx) => {
-          const key = `${c.id}_${rIdx}_${cIdx}`;
-          const val = state.scratchpad[key] || 0;
-          let symbol = "";
-          let cls = "cell-neutral";
-          if (val === 1) {
-            symbol = "✕";
-            cls = "cell-cross";
-          } else if (val === 2) {
-            symbol = "✓";
-            cls = "cell-match";
+      if (!s || !w || !l) {
+        showToast("⚠️ Missing Facts", "Select a suspect, murder weapon, and location before presenting your accusation.", "Examine Grid");
+        return;
+      }
+
+      if (s === c.solution.suspect && w === c.solution.weapon && l === c.solution.location) {
+        if (!state.completed.includes(c.id)) {
+          state.completed.push(c.id);
+          saveState();
+        }
+
+        const isLast = state.caseIndex === CASES.length - 1;
+        showToast(
+          "⚖️ GUILTY AS CHARGED!",
+          `Masterful deduction. ${s} killed the victim at the ${l} using the ${w}.`,
+          isLast ? "Restart Journey" : "Next Mystery",
+          () => {
+            state.caseIndex = isLast ? 0 : state.caseIndex + 1;
+            saveState();
+            renderActiveCase();
           }
-          html += `<td>
-            <div class="grid-cell ${cls}" onclick="cycleCell('${key}')">${symbol}</div>
-          </td>`;
-        });
-        html += `</tr>`;
-      });
+        );
+      } else {
+        showToast(
+          "❌ INNOCENT!",
+          "Your accusation contradicts verified testimonies or forensic traces. Double check your cross-marks (✕) and deductions.",
+          "Back to Investigation"
+        );
+      }
+    });
 
-      html += `</tbody>`;
-      deductionGrid.innerHTML = html;
+    /* Modals & Drawers */
+    const archiveModal = document.getElementById("archive-modal");
+    const hintModal = document.getElementById("hint-modal");
+    const resultToast = document.getElementById("result-toast");
+    let toastAction = null;
+
+    document.getElementById("open-archive-btn").addEventListener("click", () => archiveModal.classList.add("active"));
+    document.getElementById("close-archive").addEventListener("click", () => archiveModal.classList.remove("active"));
+    document.getElementById("open-hint-btn").addEventListener("click", () => hintModal.classList.add("active"));
+    document.getElementById("close-hint").addEventListener("click", () => hintModal.classList.remove("active"));
+
+    [archiveModal, hintModal].forEach(m => {
+      m.addEventListener("click", (e) => {
+        if (e.target === m) m.classList.remove("active");
+      });
+    });
+
+    function showToast(title, body, btnText, callback = null) {
+      document.getElementById("toast-title").textContent = title;
+      document.getElementById("toast-body").textContent = body;
+      document.getElementById("toast-btn").textContent = btnText;
+      toastAction = callback;
+      resultToast.classList.add("active");
     }
 
-    /* Cycle cell: 0 (Blank) -> 1 (Alibi ✕) -> 2 (Confirmed ✓) -> 0 */
-    window.cycleCell = function(key) {
-      const current = state.scratchpad[key] || 0;
-      const next = (current + 1) % 3;
-      state.scratchpad[key] = next;
-      saveState();
-      renderGrid(CASES[state.currentLevelIndex]);
-    };
+    document.getElementById("toast-btn").addEventListener("click", () => {
+      resultToast.classList.remove("active");
+      if (toastAction) {
+        toastAction();
+        toastAction = null;
+      }
+    });
 
-    /* Render Level Drawer */
-    function renderLevelList() {
-      levelList.innerHTML = CASES.map((c, i) => {
-        const isDone = state.completedLevels.includes(c.id);
-        const isActive = i === state.currentLevelIndex;
+    function renderCaseList() {
+      const container = document.getElementById("case-list-container");
+      container.innerHTML = CASES.map((c, i) => {
+        const isSolved = state.completed.includes(c.id);
+        const isCurrent = i === state.caseIndex;
         return `
-          <div class="level-item ${isDone ? 'completed' : ''} ${isActive ? 'active-level' : ''}" onclick="selectCase(${i})">
+          <div class="case-nav-item ${isCurrent ? 'current' : ''}" onclick="selectCase(${i})">
             <div>
-              <div class="level-name">${c.id}. ${c.title}</div>
-              <div class="level-diff">${c.difficulty} · ${c.suspects.length}x${c.weapons.length + c.rooms.length} Matrix</div>
+              <div style="font-size:0.9rem; font-weight:700;">Case ${c.id}: ${c.title}</div>
+              <div style="font-size:0.72rem; color:var(--gold); margin-top:2px;">${c.difficulty}</div>
             </div>
-            <div>${isDone ? '🏆 Solved' : (isActive ? '▶ Current' : '🔒 Open')}</div>
+            <div style="font-size:0.8rem; font-weight:700;">
+              ${isSolved ? '🏆 Solved' : (isCurrent ? '▶ Active' : 'Unsolved')}
+            </div>
           </div>
         `;
       }).join("");
     }
 
-    window.selectCase = function(index) {
-      state.currentLevelIndex = index;
+    window.selectCase = function(idx) {
+      state.caseIndex = idx;
       saveState();
-      renderLevel();
-      levelModal.classList.remove("active");
+      renderActiveCase();
+      archiveModal.classList.remove("active");
     };
 
-    /* ========================================================
-       ACCUSATION & SOLVE LOGIC
-       ======================================================== */
-    submitVerdictBtn.addEventListener("click", () => {
-      const c = CASES[state.currentLevelIndex];
-      const killer = selectKiller.value;
-      const weapon = selectWeapon.value;
-      const room = selectRoom.value;
-
-      if (!killer || !weapon || !room) {
-        showToast("⚠️ Missing Clues", "You must accuse a specific suspect with both weapon and location.", "Review Dossier");
-        return;
-      }
-
-      if (killer === c.solution.killer && weapon === c.solution.weapon && room === c.solution.room) {
-        // Correct Deduction
-        if (!state.completedLevels.includes(c.id)) {
-          state.completedLevels.push(c.id);
-          saveState();
-        }
-
-        const isLastLevel = state.currentLevelIndex === CASES.length - 1;
-        showToast(
-          "⚖️ Case Solved!",
-          `Brilliant detective work. ${killer} committed the murder in the ${room} using the ${weapon}.`,
-          isLastLevel ? "Start Anew" : "Next Mystery",
-          () => {
-            if (!isLastLevel) {
-              state.currentLevelIndex++;
-            } else {
-              state.currentLevelIndex = 0;
-            }
-            saveState();
-            renderLevel();
-          }
-        );
-      } else {
-        // Wrong Deduction
-        showToast(
-          "❌ Flawed Alibi",
-          "Your accusation contradicts the witness testimonies or physical evidence. Double-check your scratchpad.",
-          "Re-examine Clues"
-        );
-      }
-    });
-
-    /* Generic Toast Modal */
-    let currentToastAction = null;
-    function showToast(title, message, buttonText, onAction = null) {
-      toastTitle.textContent = title;
-      toastMsg.textContent = message;
-      toastBtn.textContent = buttonText;
-      currentToastAction = onAction;
-      verdictToast.classList.add("active");
-    }
-
-    toastBtn.addEventListener("click", () => {
-      verdictToast.classList.remove("active");
-      if (currentToastAction) {
-        currentToastAction();
-        currentToastAction = null;
-      }
-    });
-
-    /* Level Drawer Handlers */
-    openLevelModalBtn.addEventListener("click", () => levelModal.classList.add("active"));
-    closeModalBtn.addEventListener("click", () => levelModal.classList.remove("active"));
-    levelModal.addEventListener("click", (e) => {
-      if (e.target === levelModal) levelModal.classList.remove("active");
-    });
-
-    // Boot
+    // Initialize
     loadState();
-    renderLevel();
+    renderActiveCase();
   </script>
 </body>
 </html>
